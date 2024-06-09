@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
+#include "Objects/TSS_InteractableObject.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -145,7 +146,23 @@ void ATheSailingSirenCharacter::Move(const FInputActionValue& Value)
 
 void ATheSailingSirenCharacter::Interact(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemplateCharacter, Log, TEXT("Interact"));
+	FVector WorldLocation;
+	FVector WorldDirection;
+	
+	if (Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(WorldLocation, WorldDirection))
+	{
+		FHitResult HitResult;
+		FCollisionQueryParams CollisionQueryParams;
+		CollisionQueryParams.AddIgnoredActor(this);
+
+		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, WorldLocation + WorldDirection * 1000.0f, ECollisionChannel::ECC_Visibility, CollisionQueryParams))
+		{
+			if (AInteractableObject* InteractableObject = Cast<AInteractableObject>(HitResult.GetActor()))
+			{
+				InteractableObject->Interact();
+			}
+		}
+	}
 }
 
 void ATheSailingSirenCharacter::StartLooking(const FInputActionValue& InputActionValue)
