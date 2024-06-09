@@ -32,5 +32,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void Interact() override;
+	UFUNCTION(BlueprintNativeEvent , Category = "Interact")
+	void Interact();
+	
 };

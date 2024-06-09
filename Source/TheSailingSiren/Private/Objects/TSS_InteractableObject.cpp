@@ -35,7 +35,7 @@ void AInteractableObject::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AInteractableObject::Interact()
+void AInteractableObject::Interact_Implementation()
 {
 	// print the name
 	UE_LOG(LogTemp, Warning, TEXT("Interacted with %s"), *GetName());
