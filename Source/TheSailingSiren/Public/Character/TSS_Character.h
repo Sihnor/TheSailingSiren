@@ -40,9 +40,17 @@ class ATheSailingSirenCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
+	/** Start Looking Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* StartLookAction;
+	
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
+
+	/** Interact Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* InteractAction;
 
 public:
 	ATheSailingSirenCharacter();
@@ -53,11 +61,20 @@ protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
+	/** Called to enable looking */
+	void StartLooking(const FInputActionValue& InputActionValue);
+
+	/** Called to disable looking */
+	void StopLooking(const FInputActionValue& InputActionValue);
+	
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
+
+	/** Called for interacting input */
+	void Interact(const FInputActionValue& InputActionValue);
 
 protected:
+	
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -69,5 +86,16 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+private:
+	void CenterMouseCursor();
+	
+
+private:
+	FRotator TargetRotation;
+	FRotator CurrentRotation;
+	float InterpSpeed;
+	
+	bool bIsLooking = false;
 };
 

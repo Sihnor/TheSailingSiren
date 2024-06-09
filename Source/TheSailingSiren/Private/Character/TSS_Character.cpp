@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -20,7 +21,7 @@ ATheSailingSirenCharacter::ATheSailingSirenCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-		
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -42,7 +43,8 @@ ATheSailingSirenCharacter::ATheSailingSirenCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
+	CameraBoom->TargetArmLength = 200.0f; // The camera follows at this distance behind the character
+	this->CameraBoom->SocketOffset = FVector(40.f, 40.f, 50.f);
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
 	// Create a follow camera
@@ -52,6 +54,7 @@ ATheSailingSirenCharacter::ATheSailingSirenCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	this->bIsLooking = false;
 }
 
 void ATheSailingSirenCharacter::BeginPlay()
@@ -65,7 +68,21 @@ void ATheSailingSirenCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+
+			PlayerController->bShowMouseCursor = true;
 		}
+	}
+}
+
+void ATheSailingSirenCharacter::CenterMouseCursor()
+{
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	if (const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer(); LocalPlayer && LocalPlayer->ViewportClient)
+	{
+		const FViewport* Viewport = LocalPlayer->ViewportClient->Viewport;
+		const FIntPoint ViewportSize = Viewport->GetSizeXY();
+		PlayerController->SetMouseLocation(ViewportSize.X / 2, ViewportSize.Y / 2);
 	}
 }
 
@@ -75,21 +92,31 @@ void ATheSailingSirenCharacter::BeginPlay()
 void ATheSailingSirenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATheSailingSirenCharacter::Move);
 
+		// Start Looking
+		EnhancedInputComponent->BindAction(StartLookAction, ETriggerEvent::Started, this, &ATheSailingSirenCharacter::StartLooking);
+		EnhancedInputComponent->BindAction(StartLookAction, ETriggerEvent::Completed, this, &ATheSailingSirenCharacter::StopLooking);
+
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATheSailingSirenCharacter::Look);
+
+		// Interacting
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ATheSailingSirenCharacter::Interact);
 	}
 	else
 	{
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		UE_LOG(LogTemplateCharacter, Error,
+		       TEXT(
+			       "'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."
+		       ), *GetNameSafe(this));
 	}
 }
 
@@ -106,7 +133,7 @@ void ATheSailingSirenCharacter::Move(const FInputActionValue& Value)
 
 		// get forward vector
 		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	
+
 		// get right vector 
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
@@ -116,8 +143,31 @@ void ATheSailingSirenCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
+void ATheSailingSirenCharacter::Interact(const FInputActionValue& InputActionValue)
+{
+	UE_LOG(LogTemplateCharacter, Log, TEXT("Interact"));
+}
+
+void ATheSailingSirenCharacter::StartLooking(const FInputActionValue& InputActionValue)
+{
+	this->bIsLooking = true;
+
+	Cast<APlayerController>(GetController())->bShowMouseCursor = false;
+}
+
+void ATheSailingSirenCharacter::StopLooking(const FInputActionValue& InputActionValue)
+{
+	this->bIsLooking = false;
+
+	this->CenterMouseCursor();
+
+	Cast<APlayerController>(GetController())->bShowMouseCursor = true;
+}
+
 void ATheSailingSirenCharacter::Look(const FInputActionValue& Value)
 {
+	if (!this->bIsLooking) return;
+
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
@@ -125,6 +175,16 @@ void ATheSailingSirenCharacter::Look(const FInputActionValue& Value)
 	{
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
+
 		AddControllerPitchInput(LookAxisVector.Y);
+
+		// clamp rotation pitch value
+		FRotator NewRotation = GetControlRotation();
+		NewRotation.Pitch = FRotator::NormalizeAxis(NewRotation.Pitch);
+		
+		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch, -40.0f, 40.0f);
+		Controller->SetControlRotation(NewRotation);
 	}
+	
+	this->CenterMouseCursor();
 }
