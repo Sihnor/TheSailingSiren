@@ -81,6 +81,8 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	virtual void Tick(float DeltaSeconds) override;
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -89,12 +91,14 @@ public:
 
 private:
 	void CenterMouseCursor();
+
+	void CinematicCameraMovement(float DeltaTime);
 	
 
 private:
 	FRotator TargetRotation;
 	FRotator CurrentRotation;
-	float InterpSpeed;
+	float InterpSpeed = 30.0f ;
 	
 	bool bIsLooking = false;
 };

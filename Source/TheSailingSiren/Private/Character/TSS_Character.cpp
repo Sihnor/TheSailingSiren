@@ -70,9 +70,21 @@ void ATheSailingSirenCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 
+			this->CurrentRotation = GetController()->GetControlRotation();
+			this->CurrentRotation = this->TargetRotation;
 			PlayerController->bShowMouseCursor = true;
 		}
 	}
+}
+
+void ATheSailingSirenCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	// Check if the current rotation is equal to the target rotation with tolerance
+	if (!FMath::IsNearlyEqual(this->CurrentRotation.Yaw, this->TargetRotation.Yaw, 0.1f) && !FMath::IsNearlyEqual(this->CurrentRotation.Pitch, this->TargetRotation.Pitch, 0.1f)) CinematicCameraMovement(DeltaSeconds);
+
+	
 }
 
 void ATheSailingSirenCharacter::CenterMouseCursor()
@@ -85,6 +97,23 @@ void ATheSailingSirenCharacter::CenterMouseCursor()
 		const FIntPoint ViewportSize = Viewport->GetSizeXY();
 		PlayerController->SetMouseLocation(ViewportSize.X / 2, ViewportSize.Y / 2);
 	}
+}
+
+void ATheSailingSirenCharacter::CinematicCameraMovement(float DeltaTime)
+{
+	const float CurrentYaw = this->CurrentRotation.Yaw;
+	const float TargetYaw = this->TargetRotation.Yaw;
+	const float CurrentPitch = this->CurrentRotation.Pitch;
+	const float TargetPitch = this->TargetRotation.Pitch;
+	constexpr float Exponent = 3.0f;
+
+	const float YawValue = FMath::InterpEaseInOut(CurrentYaw, TargetYaw, this->InterpSpeed * DeltaTime, Exponent);
+	this->CurrentRotation.Yaw = YawValue;
+
+	const float PitchValue = FMath::InterpEaseInOut(CurrentPitch, TargetPitch, this->InterpSpeed * DeltaTime, Exponent);
+	this->CurrentRotation.Pitch = PitchValue;
+
+	GetController()->SetControlRotation(this->CurrentRotation);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -148,7 +177,7 @@ void ATheSailingSirenCharacter::Interact(const FInputActionValue& InputActionVal
 {
 	FVector WorldLocation;
 	FVector WorldDirection;
-	
+
 	if (Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(WorldLocation, WorldDirection))
 	{
 		FHitResult HitResult;
@@ -175,7 +204,7 @@ void ATheSailingSirenCharacter::StartLooking(const FInputActionValue& InputActio
 void ATheSailingSirenCharacter::StopLooking(const FInputActionValue& InputActionValue)
 {
 	this->bIsLooking = false;
-
+	
 	this->CenterMouseCursor();
 
 	Cast<APlayerController>(GetController())->bShowMouseCursor = true;
@@ -190,18 +219,19 @@ void ATheSailingSirenCharacter::Look(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-
-		AddControllerPitchInput(LookAxisVector.Y);
-
-		// clamp rotation pitch value
-		FRotator NewRotation = GetControlRotation();
-		NewRotation.Pitch = FRotator::NormalizeAxis(NewRotation.Pitch);
-		
-		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch, -40.0f, 40.0f);
-		Controller->SetControlRotation(NewRotation);
+		this->TargetRotation = FRotator(this->TargetRotation.Pitch - LookAxisVector.Y, this->TargetRotation.Yaw + LookAxisVector.X, this->TargetRotation.Roll);
+		//// add yaw and pitch input to controller
+		//AddControllerYawInput(LookAxisVector.X);
+		//
+		//AddControllerPitchInput(LookAxisVector.Y);
+		//
+		//// clamp rotation pitch value
+		//FRotator NewRotation = GetControlRotation();
+		//NewRotation.Pitch = FRotator::NormalizeAxis(NewRotation.Pitch);
+		//
+		//NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch, -40.0f, 40.0f);
+		//Controller->SetControlRotation(NewRotation);
 	}
-	
+
 	this->CenterMouseCursor();
 }
