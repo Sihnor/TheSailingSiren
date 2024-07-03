@@ -8,10 +8,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "InputActionValue.h"
-#include "Kismet/GameplayStatics.h"
-#include "Objects/TSS_InteractableObject.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -55,7 +51,6 @@ ATheSailingSirenCharacter::ATheSailingSirenCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-	this->bIsLooking = false;
 }
 
 void ATheSailingSirenCharacter::BeginPlay()
@@ -63,57 +58,35 @@ void ATheSailingSirenCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
-	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-
-			this->CurrentRotation = GetController()->GetControlRotation();
-			this->CurrentRotation = this->TargetRotation;
-			PlayerController->bShowMouseCursor = true;
-		}
-	}
 }
 
-void ATheSailingSirenCharacter::Tick(float DeltaSeconds)
+void ATheSailingSirenCharacter::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// Check if the current rotation is equal to the target rotation with tolerance
-	if (!FMath::IsNearlyEqual(this->CurrentRotation.Yaw, this->TargetRotation.Yaw, 0.1f) && !FMath::IsNearlyEqual(this->CurrentRotation.Pitch, this->TargetRotation.Pitch, 0.1f)) CinematicCameraMovement(DeltaSeconds);
+	if (this->bIsCameraMoving) MoveCameraToTarget(DeltaSeconds);
+}
 
+void ATheSailingSirenCharacter::StartMovementCameraToTarget(const FVector& TargetLocation, const FRotator& TargetRotation)
+{
+	this->CameraTargetLocation = TargetLocation;
+	this->CameraTargetRotation = TargetRotation;
+	this->bIsCameraMoving = true;
+}
+
+void ATheSailingSirenCharacter::MoveCameraToTarget(const float DeltaSeconds)
+{
+	// Move the camera to the target location
+	const FVector NewLocation = FMath::VInterpTo(this->FollowCamera->GetComponentLocation(), this->CameraTargetLocation, DeltaSeconds, 2.0f);
+	const FRotator NewRotation = FMath::RInterpTo(this->FollowCamera->GetComponentRotation(), this->CameraTargetRotation, DeltaSeconds, 2.0f);
 	
-}
+	this->FollowCamera->SetWorldLocation(NewLocation);
+	this->FollowCamera->SetWorldRotation(NewRotation);
 
-void ATheSailingSirenCharacter::CenterMouseCursor()
-{
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-
-	if (const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer(); LocalPlayer && LocalPlayer->ViewportClient)
+	if (FVector::DistSquared(this->FollowCamera->GetComponentLocation(), this->CameraTargetLocation) < 1.0f)
 	{
-		const FViewport* Viewport = LocalPlayer->ViewportClient->Viewport;
-		const FIntPoint ViewportSize = Viewport->GetSizeXY();
-		PlayerController->SetMouseLocation(ViewportSize.X / 2, ViewportSize.Y / 2);
+		this->bIsCameraMoving = false;
 	}
-}
-
-void ATheSailingSirenCharacter::CinematicCameraMovement(float DeltaTime)
-{
-	const float CurrentYaw = this->CurrentRotation.Yaw;
-	const float TargetYaw = this->TargetRotation.Yaw;
-	const float CurrentPitch = this->CurrentRotation.Pitch;
-	const float TargetPitch = this->TargetRotation.Pitch;
-	constexpr float Exponent = 3.0f;
-
-	const float YawValue = FMath::InterpEaseInOut(CurrentYaw, TargetYaw, this->InterpSpeed * DeltaTime, Exponent);
-	this->CurrentRotation.Yaw = YawValue;
-
-	const float PitchValue = FMath::InterpEaseInOut(CurrentPitch, TargetPitch, this->InterpSpeed * DeltaTime, Exponent);
-	this->CurrentRotation.Pitch = PitchValue;
-
-	GetController()->SetControlRotation(this->CurrentRotation);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -127,111 +100,5 @@ void ATheSailingSirenCharacter::SetupPlayerInputComponent(UInputComponent* Playe
 		// Jumping
 		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
-		// Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATheSailingSirenCharacter::Move);
-
-		// Start Looking
-		EnhancedInputComponent->BindAction(StartLookAction, ETriggerEvent::Started, this, &ATheSailingSirenCharacter::StartLooking);
-		EnhancedInputComponent->BindAction(StartLookAction, ETriggerEvent::Completed, this, &ATheSailingSirenCharacter::StopLooking);
-
-		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATheSailingSirenCharacter::Look);
-
-		// Interacting
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ATheSailingSirenCharacter::Interact);
 	}
-	else
-	{
-		UE_LOG(LogTemplateCharacter, Error,
-		       TEXT(
-			       "'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."
-		       ), *GetNameSafe(this));
-	}
-}
-
-void ATheSailingSirenCharacter::Move(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-
-		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-		// add movement 
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
-	}
-}
-
-void ATheSailingSirenCharacter::Interact(const FInputActionValue& InputActionValue)
-{
-	FVector WorldLocation;
-	FVector WorldDirection;
-
-	if (Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(WorldLocation, WorldDirection))
-	{
-		FHitResult HitResult;
-		FCollisionQueryParams CollisionQueryParams;
-		CollisionQueryParams.AddIgnoredActor(this);
-
-		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, WorldLocation + WorldDirection * 1000.0f, ECollisionChannel::ECC_Visibility, CollisionQueryParams))
-		{
-			if (AInteractableObject* InteractableObject = Cast<AInteractableObject>(HitResult.GetActor()))
-			{
-				InteractableObject->Interact();
-			}
-		}
-	}
-}
-
-void ATheSailingSirenCharacter::StartLooking(const FInputActionValue& InputActionValue)
-{
-	this->bIsLooking = true;
-
-	Cast<APlayerController>(GetController())->bShowMouseCursor = false;
-}
-
-void ATheSailingSirenCharacter::StopLooking(const FInputActionValue& InputActionValue)
-{
-	this->bIsLooking = false;
-	
-	this->CenterMouseCursor();
-
-	Cast<APlayerController>(GetController())->bShowMouseCursor = true;
-}
-
-void ATheSailingSirenCharacter::Look(const FInputActionValue& Value)
-{
-	if (!this->bIsLooking) return;
-
-	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		this->TargetRotation = FRotator(this->TargetRotation.Pitch - LookAxisVector.Y, this->TargetRotation.Yaw + LookAxisVector.X, this->TargetRotation.Roll);
-		//// add yaw and pitch input to controller
-		//AddControllerYawInput(LookAxisVector.X);
-		//
-		//AddControllerPitchInput(LookAxisVector.Y);
-		//
-		//// clamp rotation pitch value
-		//FRotator NewRotation = GetControlRotation();
-		//NewRotation.Pitch = FRotator::NormalizeAxis(NewRotation.Pitch);
-		//
-		//NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch, -40.0f, 40.0f);
-		//Controller->SetControlRotation(NewRotation);
-	}
-
-	this->CenterMouseCursor();
 }

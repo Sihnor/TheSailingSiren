@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Interfaces/TSS_Interact.h"
+#include "Interfaces/TSS_Interactable.h"
 #include "TSS_InteractableObject.generated.h"
 
 UCLASS()
-class THESAILINGSIREN_API AInteractableObject : public AActor, public IInteract
+class THESAILINGSIREN_API AInteractableObject : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 
