@@ -20,7 +20,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* Root;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "BoardMesh")
 	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

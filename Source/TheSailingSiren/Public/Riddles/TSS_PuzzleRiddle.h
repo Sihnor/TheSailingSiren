@@ -22,17 +22,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneComponent* Root;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UStaticMeshComponent* Mesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "BoardMesh")
+	UStaticMeshComponent* BoardMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneComponent* CameraPosition;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Piece")
-	TArray<APuzzlePiece*> Pieces;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Piece")
-	TArray<UStaticMesh*> PieceMeshes;
+	TArray<TSubclassOf<APuzzlePiece>>  Pieces;
 	
 protected:
 	// Called when the game starts or when spawned

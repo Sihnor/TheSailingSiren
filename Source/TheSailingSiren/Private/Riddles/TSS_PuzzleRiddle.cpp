@@ -15,17 +15,16 @@ APuzzleRiddle::APuzzleRiddle()
 	this->Root = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	RootComponent = this->Root;
 
-	this->Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoardMesh"));
-	this->Mesh->SetupAttachment(this->Root);
+	this->BoardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoardMesh"));
+	this->BoardMesh->SetupAttachment(this->Root);
 
 	this->CameraPosition = CreateDefaultSubobject<USceneComponent>(TEXT("CameraPosition"));
 	this->CameraPosition->SetupAttachment(this->Root);
 	this->CameraPosition->SetRelativeLocation(FVector(0.f, 0.f, 90.f));
 
 	
-	Mesh->SetNotifyRigidBodyCollision(true);
-	Mesh->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
-
+	BoardMesh->SetNotifyRigidBodyCollision(true);
+	BoardMesh->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
 }
 
 const USceneComponent* APuzzleRiddle::Interact_Implementation()
@@ -37,16 +36,39 @@ const USceneComponent* APuzzleRiddle::Interact_Implementation()
 void APuzzleRiddle::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	for (int i = 0; i < 14; i++)
+
+	// Spawn the pieces from the array
+	for (TSubclassOf<APuzzlePiece> Piece : this->Pieces)
 	{
-		APuzzlePiece* Piece = GetWorld()->SpawnActor<APuzzlePiece>(APuzzlePiece::StaticClass());
-		//Piece->SetMesh(this->PieceMeshes[i]);
-		Piece->SetActorLocation(FVector(40 - i * 6, -40, 0));
-		Piece->SetActorRotation(FRotator(0.f, 0.f, 0.f));
-		Piece->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
-		this->Pieces.Add(Piece);
+		if (Piece == nullptr) continue; 
+		APuzzlePiece* NewPiece = GetWorld()->SpawnActor<APuzzlePiece>(Piece);
+		NewPiece->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+		// Set the piece's location and rotation to the board's location and rotation
+		NewPiece->SetActorLocation(this->GetActorLocation());
+		NewPiece->SetActorRotation(this->GetActorRotation());
+
+		if(GEngine)	
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Piece Location: %s"), *NewPiece->GetActorLocation().ToString()));
+		}
+
+		//print GetActorLocation
+		if(GEngine)	
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Location: %s"), *this->GetActorLocation().ToString()));
+		}
 	}
+	
+	
+	//for (int i = 0; i < 14; i++)
+	//{
+	//	APuzzlePiece* Piece = GetWorld()->SpawnActor<APuzzlePiece>(APuzzlePiece::StaticClass());
+	//	//Piece->SetMesh(this->PieceMeshes[i]);
+	//	Piece->SetActorLocation(FVector(40 - i * 6, -40, 0));
+	//	Piece->SetActorRotation(FRotator(0.f, 0.f, 0.f));
+	//	Piece->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+	//	this->Pieces.Add(Piece);
+	//}
 }
 
 void APuzzleRiddle::Tick(float DeltaTime)

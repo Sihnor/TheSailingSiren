@@ -12,8 +12,14 @@ APuzzlePiece::APuzzlePiece()
 
 	this->Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = this->Root;
-
+	
 	this->Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PuzzlePieceMesh"));
+	this->Mesh->SetupAttachment(this->Root);
+
+	
+	
+	this->Mesh->SetNotifyRigidBodyCollision(true);
+	this->Mesh->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
 }
 
 // Called when the game starts or when spawned
@@ -27,10 +33,5 @@ void APuzzlePiece::BeginPlay()
 void APuzzlePiece::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void APuzzlePiece::SetMesh(UStaticMesh* Element)
-{
-	this->Mesh->SetStaticMesh(Element);
 }
 
