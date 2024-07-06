@@ -246,21 +246,8 @@ TSharedPtr<FWwiseTreeItem> SWaapiPicker::ConstructWwiseTreeItem(const TSharedPtr
 
 TSharedPtr<FWwiseTreeItem> SWaapiPicker::ConstructWwiseTreeItem(const TSharedPtr<FJsonObject>& ItemInfoObj)
 {
-	static const FString ValidPaths[] = {
-		EWwiseItemType::FolderNames[EWwiseItemType::Event],
-		EWwiseItemType::FolderNames[EWwiseItemType::AuxBus],
-		EWwiseItemType::FolderNames[EWwiseItemType::ActorMixer],
-		EWwiseItemType::FolderNames[EWwiseItemType::GameParameter],
-		EWwiseItemType::FolderNames[EWwiseItemType::State],
-		EWwiseItemType::FolderNames[EWwiseItemType::Switch],
-		EWwiseItemType::FolderNames[EWwiseItemType::Trigger],
-		EWwiseItemType::FolderNames[EWwiseItemType::AcousticTexture],
-		EWwiseItemType::FolderNames[EWwiseItemType::EffectShareSet]
-
-	};
-
-	static auto isValidPath = [](const FString& input, const auto& source) -> bool {
-		for (const auto& item : source)
+	static auto isValidPath = [](const FString& input) -> bool {
+		for (const auto& item : EWwiseItemType::FolderNames)
 		{
 			if (input.StartsWith(WwiseWaapiHelper::BACK_SLASH + item))
 			{
@@ -280,7 +267,7 @@ TSharedPtr<FWwiseTreeItem> SWaapiPicker::ConstructWwiseTreeItem(const TSharedPtr
 	}
 
 	const FString itemPath = ItemInfoObj->GetStringField(WwiseWaapiHelper::PATH);
-	if (isValidPath(itemPath, ValidPaths))
+	if (isValidPath(itemPath))
 	{
 		const FString itemIdString = ItemInfoObj->GetStringField(WwiseWaapiHelper::ID);
 		FGuid in_ItemId = FGuid::NewGuid();

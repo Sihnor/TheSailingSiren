@@ -105,6 +105,8 @@ UClass* FWwiseReconcileImpl::GetUClassFromWwiseRefType(EWwiseRefType RefType)
 		return UAkAuxBus::StaticClass();
 	case EWwiseRefType::AcousticTexture:
 		return UAkAcousticTexture::StaticClass();
+	case EWwiseRefType::AudioDevice:
+		return UAkAudioDeviceShareSet::StaticClass();
 	case EWwiseRefType::State:
 		return UAkStateValue::StaticClass();
 	case EWwiseRefType::Switch:

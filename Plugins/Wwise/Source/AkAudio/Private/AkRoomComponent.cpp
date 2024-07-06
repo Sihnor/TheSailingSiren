@@ -344,6 +344,7 @@ void UAkRoomComponent::DestroyDrawComponent()
 {
 	if (DrawRoomComponent != nullptr)
 	{
+		DrawRoomComponent->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, /*bCallModify=*/ false));
 		DrawRoomComponent->DestroyComponent();
 		DrawRoomComponent = nullptr;
 	}

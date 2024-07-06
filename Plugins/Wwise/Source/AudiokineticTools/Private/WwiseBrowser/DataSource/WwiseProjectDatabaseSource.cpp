@@ -104,6 +104,7 @@ bool FWwiseProjectDatabaseDataSource::ConstructTree(bool bShouldRefresh)
 		const WwiseBusGlobalIdsMap& Busses = DataStructure.GetBusses();
 		const WwiseAuxBusGlobalIdsMap& AuxBusses = DataStructure.GetAuxBusses();
 		const WwiseAcousticTextureGlobalIdsMap& AcousticTextures = DataStructure.GetAcousticTextures();
+		const WwiseAudioDeviceGlobalIdsMap& AudioDevices = DataStructure.GetAudioDevices();
 		const WwiseStateGroupGlobalIdsMap& StateGroups = DataStructure.GetStateGroups();
 		const WwiseStateGlobalIdsMap& States = DataStructure.GetStates();
 		const WwiseSwitchGlobalIdsMap& Switches = DataStructure.GetSwitches();
@@ -116,6 +117,7 @@ bool FWwiseProjectDatabaseDataSource::ConstructTree(bool bShouldRefresh)
 		BuildBusses(Busses);
 		BuildAuxBusses(AuxBusses);
 		BuildAcousticTextures(AcousticTextures);
+		BuildAudioDevices(AudioDevices);
 		BuildStateGroups(StateGroups);
 		BuildStates(States);
 		BuildSwitchGroups(SwitchGroups);
@@ -369,6 +371,30 @@ void FWwiseProjectDatabaseDataSource::BuildAcousticTextures(const WwiseAcousticT
 		if (!BuildFolderHierarchy(*WwiseItem, EWwiseItemType::AcousticTexture, FolderItem))
 		{
 			UE_LOG(LogAudiokineticTools, Error, TEXT("Failed to place %s in the Wwise Browser"), *WwiseItem->ObjectPath.ToString());
+		}
+	}
+
+	FolderItem->ChildCountInWwise = FolderItem->GetChildren().Num();
+}
+
+void FWwiseProjectDatabaseDataSource::BuildAudioDevices(const WwiseAudioDeviceGlobalIdsMap& AudioDevices)
+{
+	const auto& FolderItem = MakeShared<FWwiseTreeItem>(EWwiseItemType::AudioDeviceShareSetBrowserName, TEXT("\\") + EWwiseItemType::FolderNames[EWwiseItemType::AudioDeviceShareSet], nullptr, EWwiseItemType::Folder, FGuid());
+	NodesByPath.Add(FolderItem->FolderPath, FolderItem);
+
+	{
+		FScopeLock AutoLock(&RootItemsLock);
+		RootItems[EWwiseItemType::AudioDeviceShareSet] = FolderItem;
+	}
+
+	for (const auto& AudioDevice : AudioDevices)
+	{
+		const auto& WwiseItem = AudioDevice.Value.GetPlugin();
+		UE_LOG(LogAudiokineticTools, VeryVerbose, TEXT("Audio Device Name: %s"), *WwiseItem->Name.ToString());
+
+		if (!BuildFolderHierarchy(*WwiseItem, EWwiseItemType::AudioDeviceShareSet, FolderItem))
+		{
+			UE_LOG(LogAudiokineticTools, Error, TEXT("Failed to place %s in the Wwise Picker"), *WwiseItem->ObjectPath.ToString());
 		}
 	}
 

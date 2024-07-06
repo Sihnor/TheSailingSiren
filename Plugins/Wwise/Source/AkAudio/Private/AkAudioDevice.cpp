@@ -766,7 +766,6 @@ bool FAkAudioDevice::Init()
 	return 1;
 }
 
-#if WITH_EDITORONLY_DATA
 void FAkAudioDevice::CleanDefaultListeners()
 {
 	auto ListenerArray = m_defaultListeners.Array();
@@ -788,6 +787,7 @@ void FAkAudioDevice::CleanDefaultListeners()
 	}
 }
 
+#if WITH_EDITORONLY_DATA
 void FAkAudioDevice::BeginPIE(const bool bIsSimulating)
 {
 	CleanDefaultListeners();
@@ -3115,9 +3115,7 @@ void FAkAudioDevice::UnregisterComponent( UAkComponent * in_pComponent )
 		}
 	}
 
-#if WITH_EDITORONLY_DATA
 	CleanDefaultListeners();
-#endif
 	if(IsValid(in_pComponent))
 	{
 		if (m_defaultListeners.Contains(in_pComponent))

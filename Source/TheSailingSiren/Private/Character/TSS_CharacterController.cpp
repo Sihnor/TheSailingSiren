@@ -26,8 +26,15 @@ void ACharacterController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// Check if the current rotation is equal to the target rotation with tolerance
-	if (!FMath::IsNearlyEqual(this->GetControlRotation().Yaw, this->TargetCameraRotation.Yaw, 0.1f) && !FMath::IsNearlyEqual(this->GetControlRotation().Pitch, this->TargetCameraRotation.Pitch, 0.1f)) CinematicCameraMovement(DeltaSeconds);
+	if (!FMath::IsNearlyEqual(this->ControlRotation.Yaw, this->TargetCameraRotation.Yaw, 0.1f))
+	{
+		if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("Yaw: %f"), this->ControlRotation.Yaw));
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("TargetYaw: %f"), this->TargetCameraRotation.Yaw));
+		
+			
+		
+		CinematicCameraMovement(DeltaSeconds);
+	}
 }
 
 void ACharacterController::SetupInputComponent()
@@ -87,6 +94,7 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 {
 	FVector WorldLocation;
 	FVector WorldDirection;
+
 	
 	if (this->DeprojectMousePositionToWorld(WorldLocation, WorldDirection))
 	{
@@ -96,11 +104,10 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, WorldLocation + WorldDirection * this->InteractionRange, ECollisionChannel::ECC_Visibility, CollisionQueryParams))
 		{
+			
 			if (IRiddleInteractable* InteractableObject = Cast<IRiddleInteractable>(HitResult.GetActor()))
 			{
-				
-				auto PuzzleCamera = InteractableObject->Execute_Interact(HitResult.GetActor());
-				if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Interactable Object: %s"), *PuzzleCamera->GetName()));
+				const USceneComponent* PuzzleCamera = InteractableObject->Execute_Interact(HitResult.GetActor());
 
 				StartCameraToPuzzleMovement(PuzzleCamera->GetComponentLocation(), PuzzleCamera->GetComponentRotation());
 			}
@@ -146,19 +153,28 @@ void ACharacterController::StopLooking(const FInputActionValue& InputActionValue
 	this->bShowMouseCursor = true;
 }
 
-void ACharacterController::CinematicCameraMovement(float DeltaTime)
+void ACharacterController::CinematicCameraMovement(const float DeltaTime)
 {
-	const float CurrentYaw = this->ControlRotation.Yaw;
-	const float TargetYaw = this->TargetCameraRotation.Yaw;
-	const float CurrentPitch = this->ControlRotation.Pitch;
-	const float TargetPitch = this->TargetCameraRotation.Pitch;
-	constexpr float Exponent = 3.0f;
+	// Normalize the current and target rotations
+	FRotator CurrentRotation = this->ControlRotation.GetNormalized();
+	FRotator TargetRotation = this->TargetCameraRotation.GetNormalized();
 
-	const float YawValue = FMath::InterpEaseInOut(CurrentYaw, TargetYaw, this->InterpSpeed * DeltaTime, Exponent);
-	this->ControlRotation.Yaw = YawValue;
+	// Convert to quaternions for smoother interpolation
+	FQuat CurrentQuat = FQuat(CurrentRotation);
+	FQuat TargetQuat = FQuat(TargetRotation);
 
-	const float PitchValue = FMath::InterpEaseInOut(CurrentPitch, TargetPitch, this->InterpSpeed * DeltaTime, Exponent);
-	this->ControlRotation.Pitch = PitchValue;
+	// Interpolate between the quaternions
+	FQuat NewQuat = FQuat::Slerp(CurrentQuat, TargetQuat, this->InterpSpeed * DeltaTime);
+
+	// Convert back to rotator
+	FRotator NewRotation = NewQuat.Rotator();
+
+	// Apply the new rotation
+	this->ControlRotation = NewRotation;
+}
+
+void ACharacterController::CameraMovementToPosition(float DeltaTime)
+{
 }
 
 void ACharacterController::StartCameraToPuzzleMovement(const FVector& TargetPosition, const FRotator& TargetRotation)
@@ -167,11 +183,11 @@ void ACharacterController::StartCameraToPuzzleMovement(const FVector& TargetPosi
 	this->SavedCameraRotation = this->ControlRotation;
 	this->TargetCameraPosition = TargetPosition;
 	this->TargetCameraRotation = TargetRotation;
-	
+
 	this->DisableInput(this);
 
 	if (ATheSailingSirenCharacter* MyCharacter = Cast<ATheSailingSirenCharacter>(this->GetCharacter()))
-		MyCharacter->StartMovementCameraToTarget(TargetCameraPosition,TargetRotation);
+		MyCharacter->StartMovementCameraToTarget(TargetCameraPosition);
 }
 
 void ACharacterController::StopCameraToPuzzleMovement()

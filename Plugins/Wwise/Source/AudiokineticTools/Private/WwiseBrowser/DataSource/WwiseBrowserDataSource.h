@@ -54,6 +54,7 @@ enum EUAssetStatusFilter
 enum EWwiseTypeFilter
 {
 	AcousticTexture,
+	AudioDeviceShareSet,
 	Effects,
 	Events,
 	GameParameters,

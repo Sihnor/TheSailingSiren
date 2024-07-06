@@ -19,6 +19,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "Wwise/WwiseProjectDatabase.h"
 #include "Wwise/WwiseResourceCookerModule.h"
+#include "Wwise/CookedData/WwiseAudioDeviceShareSetCookedData.h"
 
 struct FWwiseSoundBankCookedData;
 struct FWwiseGameParameterCookedData;
@@ -97,6 +98,7 @@ public:
 	void CookSoundBank(const FWwiseObjectInfo& InInfo, WriteAdditionalFileFunction WriteAdditionalFile);
 
 	bool PrepareCookedData(FWwiseAcousticTextureCookedData& OutCookedData, const FWwiseObjectInfo& InInfo);
+	bool PrepareCookedData(FWwiseAudioDeviceShareSetCookedData& OutCookedData, const FWwiseObjectInfo& InInfo);
 	bool PrepareCookedData(FWwiseLocalizedAuxBusCookedData& OutCookedData, const FWwiseObjectInfo& InInfo);
 	bool PrepareCookedData(FWwiseLocalizedEventCookedData& OutCookedData, const FWwiseEventInfo& InInfo);
 	bool PrepareCookedData(FWwiseExternalSourceCookedData& OutCookedData, uint32 InCookie);
@@ -142,6 +144,7 @@ public:
 	virtual void CookFileToSandbox(const FString& InInputPathName, const FName& InOutputPathName, WriteAdditionalFileFunction WriteAdditionalFile, bool bInStageRelativeToContent = false) {}
 
 	virtual bool GetAcousticTextureCookedData(FWwiseAcousticTextureCookedData& OutCookedData, const FWwiseObjectInfo& InInfo) const { return false; }
+	virtual bool GetAudioDeviceShareSetCookedData(FWwiseAudioDeviceShareSetCookedData& OutCookedData, const FWwiseObjectInfo& InInfo) const { return false; }
 	virtual bool GetAuxBusCookedData(FWwiseLocalizedAuxBusCookedData& OutCookedData, const FWwiseObjectInfo& InInfo) const { return false; }
 	virtual bool GetEventCookedData(FWwiseLocalizedEventCookedData& OutCookedData, const FWwiseEventInfo& InInfo) const { return false; }
 	virtual bool GetExternalSourceCookedData(FWwiseExternalSourceCookedData& OutCookedData, uint32 InCookie) const { return false; }

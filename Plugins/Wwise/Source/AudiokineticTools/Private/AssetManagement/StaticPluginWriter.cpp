@@ -224,7 +224,8 @@ namespace StaticPluginWriter_Helper
 		for (auto& PluginName : Plugins)
 		{
 			// Don't include AkAudioInputSourceFactory.h in file because it is already linked in AkAudioInputManager
-			if (PluginName.Equals(TEXT("AkAudioInputSource")))
+			// Don't include AkMeterFX.h because it is alreay included in WwiseSoundEngineAPI
+			if (PluginName.Equals(TEXT("AkAudioInputSource")) || PluginName.Equals(TEXT("AkMeterFX")))
 			{
 				continue;
 			}

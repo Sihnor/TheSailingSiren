@@ -177,6 +177,7 @@ void SetAkResourceBrushes(FSlateStyleSet& Style)
 	SetAkBrush(Style, "AudiokineticTools.SwitchGroupIcon", "switchgroup_nor");
 	SetAkBrush(Style, "AudiokineticTools.TriggerIcon", "trigger_nor");
 	SetAkBrush(Style, "AudiokineticTools.EffectShareSetIcon", "effect_shareset_nor");
+	SetAkBrush(Style, "AudiokineticTools.AudioDeviceIcon", "audio_device_nor");
 
 	SetClassThumbnail(Style, "ClassThumbnail.AkAcousticTexture", "AkAcousticTexture");
 	SetClassThumbnail(Style, "ClassThumbnail.AkAudioEvent", "AkAudioEvent");
@@ -191,6 +192,7 @@ void SetAkResourceBrushes(FSlateStyleSet& Style)
 	SetClassThumbnail(Style, "ClassThumbnail.AkSwitchValue", "AkSwitchValue");
 	SetClassThumbnail(Style, "ClassThumbnail.AkTrigger", "AkTrigger");
 	SetClassThumbnail(Style, "ClassThumbnail.AkEffectShareSet", "AkEffectShareSet");
+	SetClassThumbnail(Style, "ClassThumbnail.AkAudioDeviceShareSet", "AkAudioDeviceShareSet");
 
 	SetClassThumbnail(Style, "ClassThumbnail.AkAcousticPortal", "AK_Acoustic_Portal");
 	SetClassIcon(Style, "ClassIcon.AkAcousticPortal", "AK_Acoustic_Portal_Explorer");
@@ -319,6 +321,7 @@ const FSlateBrush* FAkAudioStyle::GetBrush(EWwiseItemType::Type ItemType)
 	case EWwiseItemType::SwitchGroup: return Style.GetBrush("AudiokineticTools.SwitchGroupIcon");
 	case EWwiseItemType::Trigger: return Style.GetBrush("AudiokineticTools.TriggerIcon");
 	case EWwiseItemType::EffectShareSet: return Style.GetBrush("AudiokineticTools.EffectShareSetIcon");
+	case EWwiseItemType::AudioDeviceShareSet: return Style.GetBrush("AudiokineticTools.AudioDeviceIcon");
 
 	default:
 		return nullptr;
@@ -367,6 +370,9 @@ const FSlateBrush* FAkAudioStyle::GetBrush(EWwiseRefType WwiseRefType)
 	case EWwiseRefType::PluginShareSet:
 		ItemType = EWwiseItemType::EffectShareSet;
 		break;
+	case EWwiseRefType::AudioDevice:
+		ItemType = EWwiseItemType::AudioDeviceShareSet;
+		break;
 	}
 	return GetBrush(ItemType);
 }
@@ -405,6 +411,10 @@ const FSlateBrush* FAkAudioStyle::GetBrush(UClass* Class)
 	if (Class == UAkAuxBus::StaticClass())
 	{
 		ItemType = EWwiseItemType::AuxBus;
+	}
+	if(Class == UAkAudioDeviceShareSet::StaticClass())
+	{
+		ItemType = EWwiseItemType::AudioDeviceShareSet;
 	}
 	return GetBrush(ItemType);
 }

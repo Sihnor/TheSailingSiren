@@ -43,14 +43,15 @@ namespace AkInitializationSettings_Helpers
 	enum { IsLoggingInitialization = true };
 
 	// expected page size and alignment requirement for all general purpose commits
-	const size_t kAkVmPageSize = 64 * 1024;
-
+	size_t AkVmPageSize = 64 * 1024;
 
 	void* AkMemAllocVM(size_t size, size_t* /*extra*/)
 	{
 		ASYNC_INC_MEMORY_STAT_BY(STAT_WwiseMemorySoundEngineVM, size);
 		LLM_SCOPE_BYTAG(Audio_Wwise_SoundEngine);
-		return FMemory::Malloc(size, kAkVmPageSize);
+		void* ptr = FMemory::Malloc(size, AkVmPageSize);
+		checkf((uintptr_t)ptr % AkVmPageSize == 0, TEXT("FMemory::Malloc is not aligned properly. Try lowering the Vm Page Size in the Wwise advanced settings."));
+		return ptr;
 	}
 
 	void AkMemFreeVM(void* address, size_t /*size*/, size_t /*extra*/, size_t release)
@@ -113,7 +114,6 @@ FAkInitializationStructure::FAkInitializationStructure()
 	MemoryMgr->GetDefaultSettings(MemSettings);
 	MemSettings.pfAllocVM = AkInitializationSettings_Helpers::AkMemAllocVM;
 	MemSettings.pfFreeVM = AkInitializationSettings_Helpers::AkMemFreeVM;
-	MemSettings.uVMPageSize = AkInitializationSettings_Helpers::kAkVmPageSize;
 
 	// AkSpanCount setting is available in 2022.1.10+, 2023.1.1+, and future versions.
 	// Locking to spanCount_Small greatly reduces the amount of memory reserved by Wwise.
@@ -397,6 +397,9 @@ namespace FAkSoundEngineInitialization
 
 		FAkInitializationStructure InitializationStructure;
 		InitializationSettings->FillInitializationStructure(InitializationStructure);
+		
+		AkInitializationSettings_Helpers::AkVmPageSize = InitializationSettings->AdvancedSettings.VmPageSize;
+		InitializationStructure.MemSettings.uVMPageSize = AkInitializationSettings_Helpers::AkVmPageSize;
 
 		UE_CLOG(AkInitializationSettings_Helpers::IsLoggingInitialization, LogAkAudio, Verbose, TEXT("Initializing Platform"));
 		FAkPlatform::PreInitialize(InitializationStructure);

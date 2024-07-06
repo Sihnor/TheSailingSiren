@@ -33,6 +33,7 @@ Statics and Globals
 const FString WwiseWaapiHelper::ACTION                       = TEXT("action");
 const FString WwiseWaapiHelper::ANCESTORS                    = TEXT("ancestors"); 
 const FString WwiseWaapiHelper::AT                           = TEXT("@");
+const FString WwiseWaapiHelper::AUDIO_DEVICE				 = TEXT("audiodevice");
 const FString WwiseWaapiHelper::AUX_BUSSES                   = TEXT("auxBusses");
 const FString WwiseWaapiHelper::BACK_SLASH                   = TEXT("\\");
 const FString WwiseWaapiHelper::BANK_DATA                    = TEXT("bankData");

@@ -63,6 +63,7 @@ private:
 	void BuildBusses(const WwiseBusGlobalIdsMap& Busses);
 	void BuildAuxBusses(const WwiseAuxBusGlobalIdsMap& AuxBusses);
 	void BuildAcousticTextures(const WwiseAcousticTextureGlobalIdsMap& AcousticTextures);
+	void BuildAudioDevices(const WwiseAudioDeviceGlobalIdsMap& AudioDevices);
 	void BuildStateGroups(const WwiseStateGroupGlobalIdsMap& StateGroups);
 	void BuildStates(const WwiseStateGlobalIdsMap& States);
 	void BuildSwitchGroups(const WwiseSwitchGroupGlobalIdsMap& SwitchGroups);

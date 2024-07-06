@@ -185,7 +185,6 @@ FName UAkSwitchValue::GetWwiseGroupName()
 		GetValidatedInfo(*AudioTypeInfo));
 
 	return RefSwitch.SwitchGroupName();
-
 }
 #endif
 

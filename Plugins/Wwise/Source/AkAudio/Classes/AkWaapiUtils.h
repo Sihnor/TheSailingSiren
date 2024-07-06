@@ -29,6 +29,7 @@ public:
 	static const FString ACTION;
 	static const FString ANCESTORS;
 	static const FString AT;
+	static const FString AUDIO_DEVICE;
 	static const FString AUX_BUSSES;
 	static const FString BACK_SLASH;
 	static const FString BANK_DATA;

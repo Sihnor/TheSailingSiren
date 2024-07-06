@@ -33,7 +33,6 @@ struct FAkWindowsAdvancedInitializationSettings : public FAkAdvancedInitializati
 
 	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (ToolTip = "Maximum number of System Audio Objects to reserve. Other processes will not be able to use them. Default is 128."))
 	uint32 MaxSystemAudioObjects = 128;
-
 	void FillInitializationStructure(FAkInitializationStructure& InitializationStructure) const;
 };
 

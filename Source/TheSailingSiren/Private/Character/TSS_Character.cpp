@@ -64,13 +64,15 @@ void ATheSailingSirenCharacter::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (this->bIsCameraMoving) MoveCameraToTarget(DeltaSeconds);
+	if(this->bIsCameraMoving)
+	{
+		this->MoveCameraToTarget(DeltaSeconds);
+	}
 }
 
-void ATheSailingSirenCharacter::StartMovementCameraToTarget(const FVector& TargetLocation, const FRotator& TargetRotation)
+void ATheSailingSirenCharacter::StartMovementCameraToTarget(const FVector& TargetLocation)
 {
 	this->CameraTargetLocation = TargetLocation;
-	this->CameraTargetRotation = TargetRotation;
 	this->bIsCameraMoving = true;
 }
 
@@ -78,15 +80,15 @@ void ATheSailingSirenCharacter::MoveCameraToTarget(const float DeltaSeconds)
 {
 	// Move the camera to the target location
 	const FVector NewLocation = FMath::VInterpTo(this->FollowCamera->GetComponentLocation(), this->CameraTargetLocation, DeltaSeconds, 2.0f);
-	const FRotator NewRotation = FMath::RInterpTo(this->FollowCamera->GetComponentRotation(), this->CameraTargetRotation, DeltaSeconds, 2.0f);
 	
 	this->FollowCamera->SetWorldLocation(NewLocation);
-	this->FollowCamera->SetWorldRotation(NewRotation);
 
-	if (FVector::DistSquared(this->FollowCamera->GetComponentLocation(), this->CameraTargetLocation) < 1.0f)
+	if(FVector::Distance(this->FollowCamera->GetComponentLocation(), this->CameraTargetLocation) < 0.5f)
 	{
+		this->FollowCamera->SetWorldLocation(this->CameraTargetLocation);
 		this->bIsCameraMoving = false;
 	}
+	
 }
 
 //////////////////////////////////////////////////////////////////////////

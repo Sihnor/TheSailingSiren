@@ -157,7 +157,8 @@ public struct WwiseSoundEngine_2022_1
         {
             SE.PublicSystemLibraries.AddRange(WwiseUEPlatformInstance.GetPublicSystemLibraries());
             TargetAkLibs.AddRange(WwiseUEPlatformInstance.GetAdditionalWwiseLibs());
-            var AdditionalProperty = WwiseUEPlatformInstance.GetAdditionalPropertyForReceipt(ModuleDirectory);
+            var RelativeModuleDirectory = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);
+            var AdditionalProperty = WwiseUEPlatformInstance.GetAdditionalPropertyForReceipt(RelativeModuleDirectory);
             if (AdditionalProperty != null)
             {
                 SE.AdditionalPropertiesForReceipt.Add(AdditionalProperty.Item1, AdditionalProperty.Item2);

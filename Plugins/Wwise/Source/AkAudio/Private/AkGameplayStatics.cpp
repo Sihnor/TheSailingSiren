@@ -533,10 +533,19 @@ void UAkGameplayStatics::AddOutput(const FAkOutputSettings& in_Settings, FAkOutp
 		UE_LOG(LogAkAudio, Warning, TEXT("UAkGameplayStatics::AddOutput: SoundEngine not initialized, new output will not be added."));
 		return;
 	}
-	AkUInt32 ShortID = SoundEngine->GetIDFromString(TCHAR_TO_ANSI(*in_Settings.AudioDeviceShareSetName));
+	if (UNLIKELY(!in_Settings.AudioDeviceShareSet)) 
+	{
+		UE_LOG(LogAkAudio, Warning, TEXT("UAkGameplayStatics::AddOutput: No Audio Device ShareSet, new output will not be added."));
+		return;
+	}
+#if WITH_EDITORONLY_DATA
+	AkUInt32 ShortID = in_Settings.AudioDeviceShareSet->AudioDeviceShareSetInfo.WwiseShortId;
+#else
+	AkUInt32 ShortID = in_Settings.AudioDeviceShareSet->GetShortID();
+#endif
 	if (UNLIKELY(ShortID == AK_INVALID_UNIQUE_ID))
 	{
-		UE_LOG(LogAkAudio, Warning, TEXT("UAkGameplayStatics::AddOutput: Short ID for %s is invalid, new output will not be added."), *in_Settings.AudioDeviceShareSetName);
+		UE_LOG(LogAkAudio, Warning, TEXT("UAkGameplayStatics::AddOutput: Short ID for %s is invalid, new output will not be added."), *in_Settings.AudioDeviceShareSet->GetName());
 		return;
 	}
 	AkOutputSettings OutSettings;
@@ -564,7 +573,6 @@ void UAkGameplayStatics::AddOutput(const FAkOutputSettings& in_Settings, FAkOutp
 	{
 		UE_LOG(LogAkAudio, Warning, TEXT("UAkGameplayStatics::AddOutput: AddOuput has failed, new output will not be added. AkResult: %s"), WwiseUnrealHelper::GetResultString(result));
 	}
-
 	out_DeviceID.UInt64Value = outputDeviceID;
 }
 
@@ -588,7 +596,16 @@ void UAkGameplayStatics::ReplaceMainOutput(const FAkOutputSettings& MainOutputSe
 		UE_LOG(LogAkAudio, Warning, TEXT("UAkGameplayStatics::ReplaceMainOutput: Could not fetch audio device, main output will not be replaced."));
 		return;
 	}
-	AkUInt32 ShortID = AudioDevice->GetShortIDFromString(MainOutputSettings.AudioDeviceShareSetName);
+	if (UNLIKELY(!MainOutputSettings.AudioDeviceShareSet))
+	{
+		UE_LOG(LogAkAudio, Warning, TEXT("UAkGameplayStatics::ReplaceMainOutput: No Audio Device ShareSet, new output will not be added."));
+		return;
+	}
+#if WITH_EDITORONLY_DATA
+	AkUInt32 ShortID = MainOutputSettings.AudioDeviceShareSet->AudioDeviceShareSetInfo.WwiseShortId;
+#else
+	AkUInt32 ShortID = MainOutputSettings.AudioDeviceShareSet->GetShortID();
+#endif
 	AkOutputSettings OutSettings;
 	OutSettings.audioDeviceShareset = ShortID;
 	OutSettings.idDevice = MainOutputSettings.IdDevice;

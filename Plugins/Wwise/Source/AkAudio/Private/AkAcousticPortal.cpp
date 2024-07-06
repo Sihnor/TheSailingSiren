@@ -264,6 +264,7 @@ void UAkPortalComponent::DestroyDrawComponent()
 {
 	if (DrawPortalComponent != nullptr)
 	{
+		DrawPortalComponent->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, /*bCallModify=*/ false));
 		DrawPortalComponent->DestroyComponent();
 		DrawPortalComponent = nullptr;
 	}
@@ -279,12 +280,15 @@ void UAkPortalComponent::InitializeParent()
 		if (!Parent.IsValid())
 		{
 			AkComponentHelpers::LogAttachmentError(this, SceneParent, "UPrimitiveComponent");
-		}
+		}	
 #if WITH_EDITOR
-		DestroyTextVisualizers();
-		InitTextVisualizers();
-		UpdateRoomNames();
-		UpdateTextLocRotVis();
+		if (!IsRunningCommandlet())
+		{
+			DestroyTextVisualizers();
+			InitTextVisualizers();
+			UpdateRoomNames();
+			UpdateTextLocRotVis();
+		}
 #endif
 	}
 }
@@ -702,11 +706,13 @@ void UAkPortalComponent::DestroyTextVisualizers()
 {
 	if (FrontRoomText != nullptr)
 	{
+		FrontRoomText->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, /*bCallModify=*/ false));
 		FrontRoomText->DestroyComponent();
 		FrontRoomText = nullptr;
 	}
 	if (BackRoomText != nullptr)
 	{
+		BackRoomText->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, /*bCallModify=*/ false));
 		BackRoomText->DestroyComponent();
 		BackRoomText = nullptr;
 	}

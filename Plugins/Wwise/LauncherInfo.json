@@ -1,10 +1,10 @@
 {
-    "originalSdkFolder": "C:\\Program Files (x86)\\Audiokinetic\\Wwise2023.1.4.8496\\SDK",
+    "originalSdkFolder": "C:\\Program Files (x86)\\Audiokinetic\\Wwise2023.1.5.8522\\SDK",
     "currentVersion": {
         "nickname": "",
-        "build": 3012,
+        "build": 3070,
         "major": 1,
-        "minor": 4,
+        "minor": 5,
         "year": 2023
     },
     "installedBundleGroups": [

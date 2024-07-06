@@ -329,7 +329,7 @@ public:
 	
 	/**
 	* Adds an output to the sound engine. Use this to add controller-attached headphones, controller speakers, DVR output, etc.
-	* The in_Settings parameter contains an Audio Device shareset to specify the output plugin to use and a device ID to specify the instance, if necessary (e.g. which game controller).
+	* The in_Settings parameter contains an Audio Device ShareSet to specify the output plugin to use and a device ID to specify the instance, if necessary (e.g. which game controller).
 	*
 	* Like most functions of AK::SoundEngine, AddOutput is asynchronous.
 	* A successful return code merely indicates that the request is properly queued. Error codes returned by this function indicate various invalid parameters.
@@ -345,7 +345,7 @@ public:
 	/**
 	* Removes one output added through AK::SoundEngine::AddOutput If a listener was associated with the device, you should consider unregistering the listener prior to call RemoveOutput so that Game Object/Listener routing is properly updated according to your game scenario.
 	*
-	* @param in_OutputDeviceId ID of the output to remove. Use the returned ID from AddOutput, GetOutputID, or ReplaceOutputt.
+	* @param in_OutputDeviceId ID of the output to remove. Use the returned ID from AddOutput, GetOutputID, or ReplaceOutput.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Audiokinetic")
 	static void RemoveOutput(FAkOutputDeviceID in_OutputDeviceId);

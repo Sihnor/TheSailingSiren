@@ -20,6 +20,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Wwise/Info/WwiseEventInfo.h"
 #include "Wwise/Info/WwiseGroupValueInfo.h"
 #include "Wwise/CookedData/WwiseAcousticTextureCookedData.h"
+#include "Wwise/CookedData/WwiseAudioDeviceShareSetCookedData.h"
 #include "Wwise/CookedData/WwiseInitBankCookedData.h"
 #include "Wwise/CookedData/WwiseLocalizedAuxBusCookedData.h"
 #include "Wwise/CookedData/WwiseLocalizedSoundBankCookedData.h"
@@ -53,6 +54,7 @@ public:
 	TMap<FWwiseGroupValueInfo, FWwiseGroupValueCookedData> SwitchCache;
 	TMap<FWwiseObjectInfo, FWwiseGameParameterCookedData> GameParameterCache;
 	TMap<FWwiseObjectInfo, FWwiseAcousticTextureCookedData> AcousticTextureCache;
+	TMap<FWwiseObjectInfo, FWwiseAudioDeviceShareSetCookedData> AudioDeviceShareSetCache;
 	TMap<FWwiseObjectInfo, FWwiseTriggerCookedData> TriggerCache;
 
 	IWwiseExternalSourceManager* ExternalSourceManager;

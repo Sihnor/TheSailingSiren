@@ -20,7 +20,10 @@ public:
 	USceneComponent* Root;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
-	UStaticMeshComponent* Mesh;
+	UStaticMeshComponent* BoardMesh;
+
+	UFUNCTION()
+	void OnRelease(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased);
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,8 +39,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetLockPosition(FVector Position);
+	void LockNearPosition();
+
 private:
 	// Piece number and the rotation of the piece
 	int32 PieceNumber;
 	FRotator PieceRotation;
+
+	FVector LockPosition;
 };

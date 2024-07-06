@@ -233,7 +233,7 @@ void UAkSurfaceReflectorSetComponent::OnRegister()
 
 void UAkSurfaceReflectorSetComponent::InitializeParentBrush(bool fromTick /* = false */)
 {
-	AVolume* Parent = Cast<AVolume>(GetOwner());
+	ABrush* Parent = Cast<ABrush>(GetOwner());
 	if (Parent)
 	{
 		ParentBrush = Parent->Brush;
@@ -347,7 +347,8 @@ TSet<int> UAkSurfaceReflectorSetComponent::GetSelectedFaceIndices() const
 		// If we are in geometry mode, go through the list of geometry objects
 		// and find our current brush and update its source data as it might have changed 
 		// in RecomputePoly
-		if (ABrush* ownerBrush = Cast<ABrush>(GetOwner()))
+		ABrush* ParentActorBrush = Cast<ABrush>(GetOwner());
+		if (ParentActorBrush != nullptr && ParentBrush != nullptr)
 		{
 			FEdModeGeometry* GeomMode = (FEdModeGeometry*)GLevelEditorModeTools().GetActiveMode(FEditorModeID(TEXT("EM_Geometry")));
 			FEdModeGeometry::TGeomObjectIterator GeomModeIt = GeomMode->GeomObjectItor();
@@ -355,7 +356,7 @@ TSet<int> UAkSurfaceReflectorSetComponent::GetSelectedFaceIndices() const
 			for (; GeomModeIt; ++GeomModeIt)
 			{
 				FGeomObjectPtr Object = *GeomModeIt;
-				if (Object->GetActualBrush() == ownerBrush)
+				if (Object->GetActualBrush() == ParentActorBrush)
 				{
 					// selectedGeometry is a list of selected geometry elements. They can be vertices, edges, or polys
 					TArray<FGeomBase*> selectedGeometry = Object->SelectionOrder;
@@ -530,7 +531,10 @@ void UAkSurfaceReflectorSetComponent::DestroyTextVisualizers()
 	for (int32 i = 0; i < TextVisualizers.Num(); i++)
 	{
 		if(TextVisualizers[i])
+		{
+			TextVisualizers[i]->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, /*bCallModify=*/ false));
 			TextVisualizers[i]->DestroyComponent();
+		}
 	}
 
 	TextVisualizers.Empty();

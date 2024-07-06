@@ -28,6 +28,7 @@ namespace EWwiseItemType
 		Event,
 		AuxBus,
 		AcousticTexture,
+		AudioDeviceShareSet,
 		State,
 		Switch,
 		GameParameter,
@@ -56,11 +57,13 @@ namespace EWwiseItemType
 	static const FString EventsBrowserName = TEXT("Events");
 	static const FString BussesBrowserName = TEXT("Busses");
 	static const FString AcousticTexturesBrowserName = TEXT("AcousticTextures");
+	static const FString AudioDeviceShareSetBrowserName = TEXT("Audio Device ShareSets");
 	static const FString StatesBrowserName = TEXT("States");
 	static const FString SwitchesBrowserName = TEXT("Switches");
 	static const FString GameParametersBrowserName = TEXT("GameParameters");
 	static const FString TriggersBrowserName = TEXT("Triggers");
 	static const FString ShareSetsBrowserName =	TEXT("Effect ShareSets");
+	static const FString ActorMixerPickerName =TEXT("Actor-Mixer Hierarchy");
 	static const FString OrphanAssetsBrowserName = TEXT("Orphan Assets");
 
 	//Name to show in the Browser
@@ -68,6 +71,7 @@ namespace EWwiseItemType
 		EventsBrowserName,
 		BussesBrowserName,
 		AcousticTexturesBrowserName,
+		AudioDeviceShareSetBrowserName,
 		StatesBrowserName,
 		SwitchesBrowserName,
 		GameParametersBrowserName,
@@ -81,6 +85,7 @@ namespace EWwiseItemType
 		TEXT("Events"),
 		TEXT("Busses"),
 		TEXT("VirtualAcoustics"),
+		TEXT("AudioDevices"),
 		TEXT("States"),
 		TEXT("Switches"),
 		TEXT("GameParameters"),
@@ -93,18 +98,17 @@ namespace EWwiseItemType
 		TEXT("Events"),
 		TEXT("Master-Mixer Hierarchy"),
 		TEXT("Virtual Acoustics"),
+		TEXT("Audio Devices"),
 		TEXT("States"),
 		TEXT("Switches"),
 		TEXT("Game Parameters"),
 		TEXT("Triggers"),
-		TEXT("Effects"),
-		TEXT("Actor-Mixer Hierarchy"),
+		TEXT("Effects")
 	};
 
 	static const TArray<FString> PhysicalFoldersToIgnore = {
 		TEXT("Actor-Mixer Hierarchy"),
 		TEXT("Attenuations"),
-		TEXT("Audio Devices"),
 		TEXT("Control Surface Sessions"),
 		TEXT("Conversion Settings"),
 		TEXT("Dynamic Dialogue"),
@@ -128,6 +132,7 @@ namespace EWwiseItemType
 
 		static const TypePair ValidTypes[] = {
 			{TEXT("AcousticTexture"), Type::AcousticTexture},
+			{TEXT("AudioDevice"), Type::AudioDeviceShareSet},
 			{TEXT("ActorMixer"), Type::ActorMixer},
 			{TEXT("AuxBus"), Type::AuxBus},
 			{TEXT("BlendContainer"), Type::BlendContainer},
@@ -172,6 +177,7 @@ namespace EWwiseItemType
 
 		static const TypePair ValidTypes[] = {
 			{TEXT("Virtual Acoustics"), Type::AcousticTexture},
+			{TEXT("Audio Devices"), Type::AudioDeviceShareSet},
 			{TEXT("Master-Mixer Hierarchy"), Type::AuxBus},
 			{TEXT("Events"), Type::Event},
 			{TEXT("Game Parameters"), Type::GameParameter},

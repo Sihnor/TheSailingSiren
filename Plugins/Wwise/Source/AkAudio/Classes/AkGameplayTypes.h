@@ -28,6 +28,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "HAL/ThreadSafeBool.h"
 #include "LatentActions.h"
 #include "AkDeprecated.h"
+#include "AkAudioDeviceShareSet.h"
 #include "AkGameplayTypes.generated.h"
 
 
@@ -425,7 +426,7 @@ struct FAkOutputSettings
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, Category = "Output Settings", BlueprintReadWrite)
-	FString AudioDeviceShareSetName;
+	UAkAudioDeviceShareSet* AudioDeviceShareSet = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Output Settings", BlueprintReadWrite)
 	int32 IdDevice = 0;

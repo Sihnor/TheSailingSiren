@@ -30,6 +30,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Piece")
 	TArray<TSubclassOf<APuzzlePiece>>  Pieces;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Piece")
+	TArray<FVector> PieceLocations;
 	
 protected:
 	// Called when the game starts or when spawned

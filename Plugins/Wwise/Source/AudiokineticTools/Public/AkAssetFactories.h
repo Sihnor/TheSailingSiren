@@ -123,4 +123,17 @@ public:
 	UAkEffectShareSetFactory(const class FObjectInitializer& ObjectInitializer);
 
 	virtual UObject* FactoryCreateNew(UClass* Class, UObject* InParent, FName Name, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn) override;
+	virtual bool CanCreateNew() const override;
+};
+
+UCLASS(hidecategories = Object)
+class UAkAudioDeviceShareSetFactory : public UAkAssetFactory
+{
+	GENERATED_BODY()
+
+public:
+	UAkAudioDeviceShareSetFactory(const class FObjectInitializer& ObjectInitializer);
+
+	virtual UObject* FactoryCreateNew(UClass* Class, UObject* InParent, FName Name, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn) override;
+	virtual bool CanCreateNew() const override;
 };

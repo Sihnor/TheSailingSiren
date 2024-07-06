@@ -36,6 +36,8 @@ struct FAkAndroidAdvancedInitializationSettings : public FAkAdvancedInitializati
 {
 	GENERATED_BODY()
 
+	FAkAndroidAdvancedInitializationSettings();
+
 	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (Bitmask, BitmaskEnum = "/Script/AkAudio.EAkAndroidAudioAPI", ToolTip = "Main audio API to use. Leave set to \"Default\" for the default audio sink."))
 	uint32 AudioAPI = (1 << (uint32)EAkAndroidAudioAPI::AAudio) | (1 << (uint32)EAkAndroidAudioAPI::OpenSL_ES);
 
@@ -43,7 +45,10 @@ struct FAkAndroidAdvancedInitializationSettings : public FAkAdvancedInitializati
 	bool RoundFrameSizeToHardwareSize = true;
 
 	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (ToolTip = "Use the lowest output latency possible for the current hardware. If true (default), the output audio device will be initialized in low-latency operation, allowing for more responsive audio playback on most devices. However, when operating in low-latency mode, some devices may have differences in audio reproduction. If false, the output audio device will be initialized without low-latency operation."))
-	bool UseLowLatencyMode = true;	
+	bool UseLowLatencyMode = true;
+
+	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (ToolTip = "Enable this to inspect sink behavior. Useful for debugging non-standard Android devices."))
+	bool bVerboseSink = false;
 
 	void FillInitializationStructure(FAkInitializationStructure& InitializationStructure) const;
 };

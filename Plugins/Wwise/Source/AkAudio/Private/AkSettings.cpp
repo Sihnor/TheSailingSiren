@@ -51,6 +51,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "ISourceControlModule.h"
 #include "SourceControlHelpers.h"
 #include "AkUnrealEditorHelper.h"
+#include "PackageTools.h"
 
 #if AK_SUPPORT_WAAPI
 #include "AkWaapiClient.h"
@@ -595,26 +596,20 @@ void UAkSettings::InitGeometrySurfacePropertiesTable()
 
 	if (GeometryTable == nullptr)
 	{
-		// find a valid GeometrySurfacePropertiesTable
-		TArray<FAssetData> TableAssets;
-#if UE_5_1_OR_LATER
-		AssetRegistryModule->Get().GetAssetsByClass(UDataTable::StaticClass()->GetClassPathName(), TableAssets);
-#else
-		AssetRegistryModule->Get().GetAssetsByClass(UDataTable::StaticClass()->GetFName(), TableAssets);
-#endif
-		for (const auto& TableAsset : TableAssets)
+		// try and find a valid asset at the default GeometrySurfacePropertiesTable location
+		auto DefaultPackagePath = UPackageTools::SanitizePackageName(DefaultAssetCreationPath + TEXT("/") + "DefaultGeometrySurfacePropertiesTable");
+		auto DefaultAssetPath = DefaultPackagePath.Append(".DefaultGeometrySurfacePropertiesTable");
+		FSoftObjectPath PotentialPath = FSoftObjectPath(DefaultAssetPath);
+
+		auto Table = Cast<UDataTable>(PotentialPath.TryLoad());
+		// verify it has the correct structure
+		if (Table && Table->RowStruct && Table->RowStruct->GetStructCPPName() == "FWwiseGeometrySurfacePropertiesRow")
 		{
-			auto Table = Cast<UDataTable>(TableAsset.GetAsset());
-			// verify it has the correct structure
-			if (Table && Table->RowStruct && Table->RowStruct->GetStructCPPName() == "FWwiseGeometrySurfacePropertiesRow")
-			{
-				UE_LOG(LogAkAudio, Log, TEXT("No GeometrySurfacePropertiesTable is assigned in the Integration Settings. Assigning %s."), *Table->GetPathName());
-				GeometryTable = Table;
-				GeometrySurfacePropertiesTable = TSoftObjectPtr<UDataTable>(Table);
-				AkUnrealEditorHelper::SaveConfigFile(this);
-				break;
-			}
-		}
+			UE_LOG(LogAkAudio, Log, TEXT("No GeometrySurfacePropertiesTable is assigned in the Integration Settings. Assigning %s."), *Table->GetPathName());
+			GeometryTable = Table;
+			GeometrySurfacePropertiesTable = TSoftObjectPtr<UDataTable>(Table);
+			AkUnrealEditorHelper::SaveConfigFile(this);
+		}	
 	}
 
 	if (GeometryTable == nullptr)
@@ -622,10 +617,13 @@ void UAkSettings::InitGeometrySurfacePropertiesTable()
 		// create a new asset
 		auto& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
 		auto NewTable = Cast<UDataTable>(AssetToolsModule.CreateAsset(TEXT("DefaultGeometrySurfacePropertiesTable"), DefaultAssetCreationPath, UDataTable::StaticClass(), nullptr));
-		NewTable->RowStruct = FWwiseGeometrySurfacePropertiesRow::StaticStruct();
-		GeometryTable = NewTable;
-		GeometrySurfacePropertiesTable = TSoftObjectPtr<UDataTable>(NewTable);
-		AkUnrealEditorHelper::SaveConfigFile(this);
+		if (NewTable)
+		{
+			NewTable->RowStruct = FWwiseGeometrySurfacePropertiesRow::StaticStruct();
+			GeometryTable = NewTable;
+			GeometrySurfacePropertiesTable = TSoftObjectPtr<UDataTable>(NewTable);
+			AkUnrealEditorHelper::SaveConfigFile(this);
+		}
 	}
 
 	if (GeometryTable == nullptr)
@@ -1359,25 +1357,19 @@ void UAkSettings::InitReverbAssignmentTable()
 
 	if (DecayTable == nullptr)
 	{
-		// find a valid ReverbAssignmentTable
-		TArray<FAssetData> TableAssets;
-#if UE_5_1_OR_LATER
-		AssetRegistryModule->Get().GetAssetsByClass(UDataTable::StaticClass()->GetClassPathName(), TableAssets);
-#else
-		AssetRegistryModule->Get().GetAssetsByClass(UDataTable::StaticClass()->GetFName(), TableAssets);
-#endif
-		for (const auto& TableAsset : TableAssets)
+		// try and find a valid asset at the default GeometrySurfacePropertiesTable location
+		auto DefaultPackagePath = UPackageTools::SanitizePackageName(DefaultAssetCreationPath + TEXT("/") + "DefaultReverbAssignmentTable");
+		auto DefaultAssetPath = DefaultPackagePath.Append(".DefaultReverbAssignmentTable");
+		FSoftObjectPath PotentialPath = FSoftObjectPath(DefaultAssetPath);
+
+		auto Table = Cast<UDataTable>(PotentialPath.TryLoad());
+		// verify it has the correct structure
+		if (Table && Table->RowStruct && Table->RowStruct->GetStructCPPName() == "FWwiseDecayAuxBusRow")
 		{
-			auto Table = Cast<UDataTable>(TableAsset.GetAsset());
-			// verify it has the correct structure
-			if (Table && Table->RowStruct && Table->RowStruct->GetStructCPPName() == "FWwiseDecayAuxBusRow")
-			{
-				UE_LOG(LogAkAudio, Log, TEXT("No ReverbAssignmentTable is assigned in the Integration Settings. Assigning %s."), *Table->GetPathName());
-				DecayTable = Table;
-				ReverbAssignmentTable = TSoftObjectPtr<UDataTable>(Table);
-				AkUnrealEditorHelper::SaveConfigFile(this);
-				break;
-			}
+			UE_LOG(LogAkAudio, Log, TEXT("No ReverbAssignmentTable is assigned in the Integration Settings. Assigning %s."), *Table->GetPathName());
+			DecayTable = Table;
+			ReverbAssignmentTable = TSoftObjectPtr<UDataTable>(Table);
+			AkUnrealEditorHelper::SaveConfigFile(this);
 		}
 	}
 
@@ -1386,10 +1378,13 @@ void UAkSettings::InitReverbAssignmentTable()
 		// create a new asset
 		auto& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
 		auto NewTable = Cast<UDataTable>(AssetToolsModule.CreateAsset(TEXT("DefaultReverbAssignmentTable"), DefaultAssetCreationPath, UDataTable::StaticClass(), nullptr));
-		NewTable->RowStruct = FWwiseDecayAuxBusRow::StaticStruct();
-		DecayTable = NewTable;
-		ReverbAssignmentTable = TSoftObjectPtr<UDataTable>(NewTable);
-		AkUnrealEditorHelper::SaveConfigFile(this);
+		if (NewTable)
+		{
+			NewTable->RowStruct = FWwiseDecayAuxBusRow::StaticStruct();
+			DecayTable = NewTable;
+			ReverbAssignmentTable = TSoftObjectPtr<UDataTable>(NewTable);
+			AkUnrealEditorHelper::SaveConfigFile(this);
+		}
 	}
 
 	if (DecayTable == nullptr)

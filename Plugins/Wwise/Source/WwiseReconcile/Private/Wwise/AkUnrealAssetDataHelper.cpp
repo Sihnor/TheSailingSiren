@@ -53,6 +53,9 @@ namespace AkUnrealAssetDataHelper
 		case EWwiseItemType::AcousticTexture:
 			Class = UAkAcousticTexture::StaticClass();
 			break;
+		case EWwiseItemType::AudioDeviceShareSet:
+			Class = UAkAudioDeviceShareSet::StaticClass();
+			break;
 		case EWwiseItemType::State:
 			Class = UAkStateValue::StaticClass();
 			break;
@@ -157,6 +160,7 @@ namespace AkUnrealAssetDataHelper
 		switch (WwiseRefType)
 		{
 		case EWwiseRefType::AcousticTexture:
+		case EWwiseRefType::AudioDevice:
 		case EWwiseRefType::AuxBus:
 		case EWwiseRefType::Event:
 		case EWwiseRefType::GameParameter:

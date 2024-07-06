@@ -498,11 +498,28 @@ void UAkGeometryComponent::ConvertStaticMesh(UStaticMeshComponent* StaticMeshCom
 				physMatOcclusion = physicalMaterial;
 		}
 
+
 		if (surfaceOverride.AcousticTexture)
-			Surface.Texture = surfaceOverride.AcousticTexture->GetShortID();
+		{
+#if WITH_EDITORONLY_DATA
+			if (IsRunningCommandlet())
+			{
+				//AcousticTexture cooked data not available while cooking
+				Surface.Texture = surfaceOverride.AcousticTexture->GetValidatedInfo(surfaceOverride.AcousticTexture->AcousticTextureInfo).WwiseShortId;
+			}
+			else
+			{
+				Surface.Texture = surfaceOverride.AcousticTexture->GetShortID();
+			}
+#else
+			Surface.Texture = surfaceOverride.AcousticTexture->GetShortID(); 
+#endif
+		}
 
 		if (surfaceOverride.bEnableOcclusionOverride)
+		{
 			Surface.Occlusion = surfaceOverride.OcclusionValue;
+		}
 
 		GeometryData.Surfaces.Add(Surface);
 		GeometryData.ToOverrideAcousticTexture.Add(physMatTexture);
@@ -735,9 +752,25 @@ void UAkGeometryComponent::ConvertCollisionMesh(UPrimitiveComponent* PrimitiveCo
 	FAkGeometrySurfaceOverride surfaceOverride = CollisionMeshSurfaceOverride;
 
 	if (surfaceOverride.AcousticTexture)
+	{
+#if WITH_EDITORONLY_DATA
+		if (IsRunningCommandlet())
+		{
+			//AcousticTexture cooked data not available while cooking
+			Surface.Texture = surfaceOverride.AcousticTexture->GetValidatedInfo(surfaceOverride.AcousticTexture->AcousticTextureInfo).WwiseShortId;
+		}
+		else
+		{
+			Surface.Texture = surfaceOverride.AcousticTexture->GetShortID();
+		}
+#else
 		Surface.Texture = surfaceOverride.AcousticTexture->GetShortID();
+#endif
+	}
 	else
+	{
 		physMatTexture = physicalMaterial;
+	}
 
 	if (bWasAddedByRoom)
 	{

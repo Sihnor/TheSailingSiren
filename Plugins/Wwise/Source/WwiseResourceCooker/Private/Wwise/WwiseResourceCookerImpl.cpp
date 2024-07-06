@@ -314,6 +314,47 @@ bool FWwiseResourceCookerImpl::GetAcousticTextureCookedData(FWwiseAcousticTextur
 	return true;
 }
 
+bool FWwiseResourceCookerImpl::GetAudioDeviceShareSetCookedData(FWwiseAudioDeviceShareSetCookedData& OutCookedData, const FWwiseObjectInfo& InInfo) const
+{
+	const auto* ProjectDatabase = GetProjectDatabase();
+	if (UNLIKELY(!ProjectDatabase))
+	{
+		UE_LOG(LogWwiseResourceCooker, Error, TEXT("GetAudioDeviceShareSetCookedData (%s %" PRIu32 " %s): ProjectDatabase not initialized"),
+			*InInfo.WwiseGuid.ToString(), InInfo.WwiseShortId, *InInfo.WwiseName.ToString());
+		return false;
+	}
+
+	const FWwiseDataStructureScopeLock DataStructure(*ProjectDatabase);
+	const auto* PlatformData = DataStructure.GetCurrentPlatformData();
+	if (UNLIKELY(!PlatformData))
+	{
+		UE_LOG(LogWwiseResourceCooker, Error, TEXT("GetAudioDeviceShareSetCookedData (%s %" PRIu32 " %s): No data for platform"),
+			*InInfo.WwiseGuid.ToString(), InInfo.WwiseShortId, *InInfo.WwiseName.ToString());
+		return false;
+	}
+
+	FWwiseRefAudioDevice AudioDeviceRef;
+
+	if (UNLIKELY(!PlatformData->GetRef(AudioDeviceRef, FWwiseSharedLanguageId(), InInfo)))
+	{
+		UE_LOG(LogWwiseResourceCooker, Warning, TEXT("GetAudioDeviceShareSetCookedData (%s %" PRIu32 " %s): No Audio Device ShareSet data found"),
+			*InInfo.WwiseGuid.ToString(), InInfo.WwiseShortId, *InInfo.WwiseName.ToString());
+		return false;
+	}
+
+	OutCookedData.ShortId = AudioDeviceRef.AudioDeviceId();
+	if (ExportDebugNameRule == EWwiseExportDebugNameRule::Release)
+	{
+		OutCookedData.DebugName = FName();
+	}
+	else
+	{
+		OutCookedData.DebugName = FName((ExportDebugNameRule == EWwiseExportDebugNameRule::Name) ? AudioDeviceRef.AudioDeviceName() : AudioDeviceRef.AudioDeviceObjectPath());
+	}
+
+	return true;
+}
+
 bool FWwiseResourceCookerImpl::GetAuxBusCookedData(FWwiseLocalizedAuxBusCookedData& OutCookedData, const FWwiseObjectInfo& InInfo) const
 {
 	const auto* ProjectDatabase = GetProjectDatabase();

@@ -103,6 +103,9 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #define LOCTEXT_NAMESPACE "AkAudio"
 
+DEFINE_LOG_CATEGORY(LogAudiokineticTools);
+IMPLEMENT_MODULE(FAudiokineticToolsModule, AudiokineticTools);
+
 FAudiokineticToolsModule* FAudiokineticToolsModule::AudiokineticToolsModuleInstance = nullptr;
 
 
@@ -477,7 +480,7 @@ void FAudiokineticToolsModule::VerifyGeneratedSoundBanksPath(UAkSettings* AkSett
 							SNew(SButton)
 							.Text(LOCTEXT("Yes", "Yes"))
 							.OnClicked_Lambda([&]() -> FReply {
-								FModuleManager::LoadModuleChecked<ISettingsModule>("Settings").ShowViewer(FName("Project"), FName("Plugins"), FName("Wwise"));
+								FModuleManager::LoadModuleChecked<ISettingsModule>("Settings").ShowViewer(FName("Project"), FName("Wwise"), FName("Integration"));
 								Dialog->RequestDestroyWindow();
 								AkSettingsPerUser->SaveConfig();
 								return FReply::Handled();

@@ -51,7 +51,6 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "Widgets/Input/SHyperlink.h"
 
 #define LOCTEXT_NAMESPACE "AkAudio"
-DEFINE_LOG_CATEGORY(LogAudiokineticTools);
 
 namespace
 {
@@ -201,7 +200,5 @@ private:
 	FReloadPopup ReloadPopup = FReloadPopup();
 	FGeneratedSoundBanksWarning GeneratedSoundBanksWarning = FGeneratedSoundBanksWarning();
 };
-
-IMPLEMENT_MODULE(FAudiokineticToolsModule, AudiokineticTools);
 
 #undef LOCTEXT_NAMESPACE

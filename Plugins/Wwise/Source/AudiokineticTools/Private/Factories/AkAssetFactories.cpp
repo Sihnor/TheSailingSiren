@@ -286,3 +286,28 @@ UObject* UAkEffectShareSetFactory::FactoryCreateNew(UClass* Class, UObject* InPa
 {
 	return AkAssetFactory_Helper::FactoryCreateNew<UAkEffectShareSet>(Class, InParent, Name, Flags, AssetID, ShortID, WwiseObjectName);
 }
+
+bool UAkEffectShareSetFactory::CanCreateNew() const
+{
+	return AkAssetFactory_Helper::CanCreateNew<UAkEffectShareSet>();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// UAkAkAudioDeviceShareSetFactory
+
+UAkAudioDeviceShareSetFactory::UAkAudioDeviceShareSetFactory(const class FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	SupportedClass = UAkAudioDeviceShareSet::StaticClass();
+	bCreateNew = bEditorImport = bEditAfterNew = true;
+}
+
+UObject* UAkAudioDeviceShareSetFactory::FactoryCreateNew(UClass* Class, UObject* InParent, FName Name, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn)
+{
+	return AkAssetFactory_Helper::FactoryCreateNew<UAkAudioDeviceShareSet>(Class, InParent, Name, Flags, AssetID, ShortID, WwiseObjectName);
+}
+
+bool UAkAudioDeviceShareSetFactory::CanCreateNew() const
+{
+	return AkAssetFactory_Helper::CanCreateNew<UAkAudioDeviceShareSet>();
+}

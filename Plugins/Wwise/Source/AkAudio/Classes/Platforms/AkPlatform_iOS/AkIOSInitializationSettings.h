@@ -28,7 +28,7 @@ USTRUCT()
 struct FAkIOSAdvancedInitializationSettings : public FAkAdvancedInitializationSettingsWithMultiCoreRendering
 {
 	GENERATED_BODY()
-
+	
 	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (ToolTip = "Number of Apple Spatial Audio point sources to allocate for 3D audio use (each point source is a system audio object)."))
 	uint32 uNumSpatialAudioPointSources = 128;
 
@@ -36,6 +36,8 @@ struct FAkIOSAdvancedInitializationSettings : public FAkAdvancedInitializationSe
 	bool bVerboseSystemOutput = false;
 
 	void FillInitializationStructure(FAkInitializationStructure& InitializationStructure) const;
+
+	FAkIOSAdvancedInitializationSettings();
 };
 
 UCLASS(config = Game, defaultconfig)

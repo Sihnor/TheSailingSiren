@@ -25,6 +25,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "AkAuxBus.h"
 #include "AkTrigger.h"
 #include "AkRtpc.h"
+#include "AkAudioDeviceShareSet.h"
 
 template<typename AkAssetType>
 class FAkAssetTypeActions_Base : public FAssetTypeActions_Base
@@ -105,3 +106,12 @@ public:
 	virtual FColor GetTypeColor() const override { return FColor(128, 192, 128); }
 };
 
+class FAssetTypeActions_AkAudioDeviceShareSet : public FAkAssetTypeActions_Base<UAkAudioDeviceShareSet>
+{
+public:
+	FAssetTypeActions_AkAudioDeviceShareSet(EAssetTypeCategories::Type InAssetCategory) : FAkAssetTypeActions_Base(InAssetCategory) {}
+
+	// IAssetTypeActions Implementation
+	virtual FText GetName() const override { return NSLOCTEXT("AkAssetTypeActions", "AssetTypeActions_AkAudioDeviceShareSet", "Audiokinetic AudioDevice ShareSet"); }
+	virtual FColor GetTypeColor() const override { return FColor(128, 192, 128); }
+};

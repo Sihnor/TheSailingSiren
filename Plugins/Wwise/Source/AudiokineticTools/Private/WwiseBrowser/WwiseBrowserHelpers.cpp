@@ -19,6 +19,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 
 #include "WwiseUEFeatures.h"
 #include "AkAcousticTexture.h"
+#include "AkAudioDeviceShareSet.h"
 #include "AkAudioEvent.h"
 #include "AkAuxBus.h"
 #include "AkRtpc.h"
@@ -52,6 +53,10 @@ EWwiseItemType::Type WwiseBrowserHelpers::GetTypeFromClass(UClass* Class)
 	if (Class == UAkAcousticTexture::StaticClass())
 	{
 		return EWwiseItemType::AcousticTexture;
+	}
+	if (Class == UAkAudioDeviceShareSet::StaticClass())
+	{
+		return EWwiseItemType::AudioDeviceShareSet;
 	}
 	if (Class == UAkRtpc::StaticClass())
 	{
@@ -106,6 +111,11 @@ void WwiseBrowserHelpers::FindOrCreateAssetsRecursive(const FWwiseTreeItemPtr& W
 	{
 		Name = WwiseTreeItem->DisplayName;
 		WwiseAssetClass = UAkAcousticTexture::StaticClass();
+	}
+	else if (WwiseTreeItem->ItemType == EWwiseItemType::AudioDeviceShareSet)
+	{
+		Name = WwiseTreeItem->DisplayName;
+		WwiseAssetClass = UAkAudioDeviceShareSet::StaticClass();
 	}
 	else if (WwiseTreeItem->ItemType == EWwiseItemType::AuxBus)
 	{
@@ -403,6 +413,9 @@ UAkAssetFactory* WwiseBrowserHelpers::GetAssetFactory(const FWwiseTreeItemPtr& W
 		break;
 	case EWwiseItemType::AcousticTexture:
 		Factory = UAkAcousticTextureFactory::StaticClass()->GetDefaultObject<UFactory>();
+		break;
+	case EWwiseItemType::AudioDeviceShareSet:
+		Factory = UAkAudioDeviceShareSetFactory::StaticClass()->GetDefaultObject<UFactory>();
 		break;
 	case EWwiseItemType::AuxBus:
 		Factory = UAkAuxBusFactory::StaticClass()->GetDefaultObject<UFactory>();

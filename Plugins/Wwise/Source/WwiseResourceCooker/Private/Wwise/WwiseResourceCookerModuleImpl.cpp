@@ -74,7 +74,7 @@ FWwiseResourceCooker* FWwiseResourceCookerModule::CreateCookerForPlatform(const 
 		if (UNLIKELY(!CookingPlatform))
 		{
 #if UE_5_0_OR_LATER
-			if (!IWwiseProjectDatabaseModule::ShouldInitializeProjectDatabase() && !FParse::Param(FCommandLine::Get(), TEXT("CookOnTheFly")))		// By The Book cooking needs to predefine the requested platforms. InEditor and OnTheFly should create them all the time.
+			if (!IWwiseProjectDatabaseModule::ShouldInitializeProjectDatabase() && !FParse::Param(FCommandLine::Get(), TEXT("CookOnTheFly")) && !FParse::Param(FCommandLine::Get(), TEXT("CookSinglePackage")))		// By The Book cooking needs to predefine the requested platforms. InEditor and OnTheFly should create them all the time.
 			{
 				UE_LOG(LogWwiseResourceCooker, Warning, TEXT("CreateCookerForPlatform: Not cooking for platform %s (UE: %s, Wwise: %s)"),
 					TargetPlatform ? *TargetPlatform->PlatformName() : TEXT("[nullptr]"),

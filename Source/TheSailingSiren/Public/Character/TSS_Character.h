@@ -55,12 +55,11 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	
-	void StartMovementCameraToTarget(const FVector& TargetLocation, const FRotator& TargetRotation);
+	void StartMovementCameraToTarget(const FVector& TargetLocation);
 	void MoveCameraToTarget(float DeltaSeconds);
 
 private:
 	bool bIsCameraMoving = false;
 	FVector CameraTargetLocation;
-	FRotator CameraTargetRotation;
 };
 

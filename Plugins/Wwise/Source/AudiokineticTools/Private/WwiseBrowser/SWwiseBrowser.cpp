@@ -51,6 +51,7 @@ Copyright (c) 2024 Audiokinetic Inc.
 #include "EditorFontGlyphs.h"
 #endif
 
+#include "AudiokineticToolsModule.h"
 #include "FSoundPlayingColumn.h"
 #include "IAudiokineticTools.h"
 #include "AssetManagement/AkAssetDatabase.h"
@@ -171,6 +172,8 @@ namespace FilterMenuTitles
 		{
 		case AcousticTexture:
 			return LOCTEXT("AcousticTexture", "Acoustic Texture");
+		case AudioDeviceShareSet:
+			return LOCTEXT("AudioDevice", "Audio Device");
 		case Effects:
 			return LOCTEXT("Effects", "Effects");
 		case Events:
@@ -195,6 +198,8 @@ namespace FilterMenuTitles
 		{
 		case AcousticTexture:
 			return LOCTEXT("AcousticTexture_Tooltip", "Filter Wwise Acoustic Texture Types.");
+		case AudioDeviceShareSet:
+			return LOCTEXT("AudioDevice_Tooltip", "Fileter Wwise Audio Device Types.");
 		case Effects:
 			return LOCTEXT("Effects_Tooltip", "Filter Wwise Effect Types.");
 		case Events:
@@ -664,6 +669,30 @@ void SWwiseBrowser::Construct(const FArguments& InArgs)
 						.Text(this, &SWwiseBrowser::GetSoundBanksLocationText)
 						.ColorAndOpacity(this, &SWwiseBrowser::GetSoundBanksLocationTextColor)
 					]
+					+ SHorizontalBox::Slot()
+					.AutoWidth()
+					[
+						SNew(SButton)
+						.ToolTipText(LOCTEXT("OpenDoc_Tooltip", "Show the Online Wwise Documentation"))
+						.ButtonStyle(FAkAudioStyle::Get(), "AudiokineticTools.HoverHintOnly")
+						.OnClicked(this, &SWwiseBrowser::OnHelpClicked)
+						[
+							SNew(SImage)
+							.Image(FAkAppStyle::Get().GetBrush("Icons.Help"))
+						]
+					]
+					+ SHorizontalBox::Slot()
+					.AutoWidth()
+					[
+						SNew(SButton)
+						.ToolTipText(LOCTEXT("ProjectSettings_Tooltip", "Open Wwise Project Settings"))
+						.ButtonStyle(FAkAudioStyle::Get(), "AudiokineticTools.HoverHintOnly")
+						.OnClicked(this, &SWwiseBrowser::OnSettingsClicked)
+						[
+							SNew(SImage)
+							.Image(FAkAppStyle::Get().GetBrush("Icons.Settings"))
+						]
+					]
 				]
 			]
 		]
@@ -1006,7 +1035,7 @@ FText SWwiseBrowser::GetWarningText() const
 	FString soundBankDirectory = WwiseUnrealHelper::GetSoundBankDirectory();
 	if (soundBankDirectory.IsEmpty())
 	{
-		const FText WarningText = LOCTEXT("BrowserSoundBanksFolderEmpty", "Root Output Path in Wwise Integration settings is empty.\nThis folder should match the \"Root Output Path\" in the Wwise Project's SoundBanks settings.");
+		const FText WarningText = LOCTEXT("BrowserSoundBanksFolderEmpty", "Root Output Path in Wwise Integration settings is empty.\nThis folder should match the \"Root Output Path\" in the Wwise Project's SoundBanks settings.\nBy default, this folder is named \"GeneratedSoundbanks\" and is located inside the Wwise Project directory.");
 		return WarningText;
 	}
 
@@ -1081,6 +1110,24 @@ FReply SWwiseBrowser::OnReconcileClicked()
 	{
 		AkAudioBankGenerationHelper::CreateGenerateSoundDataWindow();
 	}
+	return FReply::Handled();
+}
+
+FReply SWwiseBrowser::OnHelpClicked()
+{
+	UE_LOG(LogAudiokineticTools, Verbose, TEXT("SWwiseBrowser::OnHelpClicked: Opening Wwise Online Documentation."));
+	if(FAudiokineticToolsModule::AudiokineticToolsModuleInstance)
+	{
+		FAudiokineticToolsModule::AudiokineticToolsModuleInstance->OpenOnlineHelp();
+	}
+
+	return FReply::Handled();
+}
+
+FReply SWwiseBrowser::OnSettingsClicked()
+{
+	UE_LOG(LogAudiokineticTools, Verbose, TEXT("SWwiseBrowser::OnSettingsClicked: Opening Project Settings."));
+	FModuleManager::LoadModuleChecked<ISettingsModule>("Settings").ShowViewer(FName("Project"), FName("Wwise"), FName("Integration"));
 	return FReply::Handled();
 }
 

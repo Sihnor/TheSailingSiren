@@ -27,6 +27,11 @@ Copyright (c) 2024 Audiokinetic Inc.
 //////////////////////////////////////////////////////////////////////////
 // FAkAndroidAdvancedInitializationSettings
 
+FAkAndroidAdvancedInitializationSettings::FAkAndroidAdvancedInitializationSettings()
+{
+	VmPageSize = 16 * 1024;
+}
+
 void FAkAndroidAdvancedInitializationSettings::FillInitializationStructure(FAkInitializationStructure& InitializationStructure) const
 {
 	Super::FillInitializationStructure(InitializationStructure);
@@ -34,6 +39,7 @@ void FAkAndroidAdvancedInitializationSettings::FillInitializationStructure(FAkIn
 #if PLATFORM_ANDROID
 	InitializationStructure.PlatformInitSettings.eAudioAPI = static_cast<AkAudioAPI>(AudioAPI);
 	InitializationStructure.PlatformInitSettings.bRoundFrameSizeToHWSize = RoundFrameSizeToHardwareSize;
+	InitializationStructure.PlatformInitSettings.bVerboseSink = bVerboseSink;
 #if WWISE_2023_1_OR_LATER
 	InitializationStructure.PlatformInitSettings.bEnableLowLatency = UseLowLatencyMode;
 #endif

@@ -310,6 +310,9 @@ struct FAkAdvancedInitializationSettings
 	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (EditCondition = "DebugOutOfRangeCheckEnabled", ToolTip = "Debug setting: Only used when Debug Out Of Range Check Enabled is true. This defines the maximum values samples can have. Normal audio must be contained within +1/-1. Set this limit to a value greater than 1 to allow temporary or short excursions out of range. The default value is 16."))
 	float DebugOutOfRangeLimit = 16.f;
 
+	UPROPERTY(EditAnywhere, Category = "Ak Initialization Settings", meta = (ToolTip = "Virtual memory page size. Modify the setting only if hitting an assert regarding memory page size."))
+	uint32 VmPageSize = 64 * 1024;
+
 	void FillInitializationStructure(FAkInitializationStructure& InitializationStructure) const;
 };
 

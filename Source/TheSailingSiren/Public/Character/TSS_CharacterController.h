@@ -72,7 +72,7 @@ private:
 	void StopCameraToPuzzleMovement();
 	void StartCameraToPlayerMovement();
 	void StopCameraToPlayerMovement();
-
+	
 private:
 	FVector SavedCameraPosition;
 	FVector TargetCameraPosition;
@@ -82,5 +82,5 @@ private:
 	bool bIsLooking = false;
 	float InterpSpeed = 30.0f ;
 
-	float InteractionRange = 200.0f;	
+	float InteractionRange = 300.0f;	
 };

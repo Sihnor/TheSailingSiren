@@ -172,6 +172,11 @@ private:
 	FReply OnGenerateSoundBanksClicked();
 
 	FReply OnReconcileClicked();
+	
+	FReply OnHelpClicked();
+
+	FReply OnSettingsClicked();
+
 	void OnTreeItemDoubleClicked(FWwiseTreeItemPtr TreeItem);
 
 	/** Populates the browser window only (does not parse the Wwise project) */

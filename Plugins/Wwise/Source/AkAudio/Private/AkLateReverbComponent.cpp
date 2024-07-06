@@ -654,11 +654,13 @@ void UAkLateReverbComponent::DestroyTextVisualizers()
 {
 	if (IsValid(TextVisualizerLabels))
 	{
+		TextVisualizerLabels->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, /*bCallModify=*/ false));
 		TextVisualizerLabels->DestroyComponent();
 		TextVisualizerLabels = nullptr;
 	}
 	if (IsValid(TextVisualizerValues))
 	{
+		TextVisualizerValues->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, /*bCallModify=*/ false));
 		TextVisualizerValues->DestroyComponent();
 		TextVisualizerValues = nullptr;
 	}

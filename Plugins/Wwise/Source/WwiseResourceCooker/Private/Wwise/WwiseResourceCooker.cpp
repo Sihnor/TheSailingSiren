@@ -231,6 +231,27 @@ bool FWwiseResourceCooker::PrepareCookedData(FWwiseAcousticTextureCookedData& Ou
 	return false;
 }
 
+bool FWwiseResourceCooker::PrepareCookedData(FWwiseAudioDeviceShareSetCookedData& OutCookedData, const FWwiseObjectInfo& InInfo)
+{
+	auto* CookingCache = GetCookingCache();
+	if (!CookingCache)
+	{
+		return GetAudioDeviceShareSetCookedData(OutCookedData, InInfo);
+	}
+
+	if (const auto* CachedCookedData = CookingCache->AudioDeviceShareSetCache.Find(InInfo))
+	{
+		OutCookedData = *CachedCookedData;
+		return true;
+	}
+	else if (LIKELY(GetAudioDeviceShareSetCookedData(OutCookedData, InInfo)))
+	{
+		CookingCache->AudioDeviceShareSetCache.Add(InInfo, OutCookedData);
+		return true;
+	}
+	return false;
+}
+
 bool FWwiseResourceCooker::PrepareCookedData(FWwiseLocalizedAuxBusCookedData& OutCookedData, const FWwiseObjectInfo& InInfo)
 {
 	auto* CookingCache = GetCookingCache();
