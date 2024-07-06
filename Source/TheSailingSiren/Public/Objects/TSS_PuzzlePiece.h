@@ -16,7 +16,7 @@ public:
 	APuzzlePiece();
 
 public:
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneComponent* Root;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
@@ -35,7 +35,6 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void SetMesh(UStaticMesh* Element);
 
 private:
 	// Piece number and the rotation of the piece
