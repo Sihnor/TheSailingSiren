@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Character/TSS_Character.h"
+#include "Character/TSS_CharacterState.h"
 #include "Interfaces/TSS_RiddleInteractable.h"
 
 void ACharacterController::BeginPlay()
@@ -20,20 +21,48 @@ void ACharacterController::BeginPlay()
 		this->TargetCameraRotation = this->GetControlRotation();
 		this->bShowMouseCursor = true;
 	}
+
+	GetPlayerState<ACharacterState>()->SetIsInLooking(true);
 }
 
 void ACharacterController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	auto CharacterState = GetPlayerState<ACharacterState>();
+	
 	if (!FMath::IsNearlyEqual(this->ControlRotation.Yaw, this->TargetCameraRotation.Yaw, 0.1f))
 	{
-		if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("Yaw: %f"), this->ControlRotation.Yaw));
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Red, FString::Printf(TEXT("TargetYaw: %f"), this->TargetCameraRotation.Yaw));
-		
-			
-		
 		CinematicCameraMovement(DeltaSeconds);
+	}
+	
+	if (CharacterState->IsInDialogue())
+	{
+		
+	}
+
+	if(CharacterState->IsInLooking())
+	{
+		if (!FMath::IsNearlyEqual(this->ControlRotation.Yaw, this->TargetCameraRotation.Yaw, 0.1f))
+		{
+			CinematicCameraMovement(DeltaSeconds);
+		}
+	}
+
+	if(CharacterState->IsInRiddle())
+	{
+		
+	}
+
+	if(CharacterState->IsInTransition())
+	{
+		if (!FMath::IsNearlyEqual(this->ControlRotation.Yaw, this->TargetCameraRotation.Yaw, 0.1f))
+		{
+			CinematicCameraMovement(DeltaSeconds);
+		}
+		else
+		{
+		}
 	}
 }
 
@@ -179,10 +208,14 @@ void ACharacterController::CameraMovementToPosition(float DeltaTime)
 
 void ACharacterController::StartCameraToPuzzleMovement(const FVector& TargetPosition, const FRotator& TargetRotation)
 {
+	GetPlayerState<ACharacterState>()->SetIsInTransition();
+	
 	this->SavedCameraPosition = this->GetCharacter()->GetActorLocation();
 	this->SavedCameraRotation = this->ControlRotation;
 	this->TargetCameraPosition = TargetPosition;
 	this->TargetCameraRotation = TargetRotation;
+
+	this->bEnableClickEvents = true;
 
 	this->DisableInput(this);
 
@@ -192,14 +225,24 @@ void ACharacterController::StartCameraToPuzzleMovement(const FVector& TargetPosi
 
 void ACharacterController::StopCameraToPuzzleMovement()
 {
+	GetPlayerState<ACharacterState>()->SetIsInRiddle(true);
+	
+	this->bEnableClickEvents = true;
+
+	this->GetPlayerState<ACharacterState>()->SetIsInRiddle(true);
 }
 
 void ACharacterController::StartCameraToPlayerMovement()
 {
+	GetPlayerState<ACharacterState>()->SetIsInTransition();
+	
 	this->TargetCameraPosition = this->SavedCameraPosition;
 	this->TargetCameraRotation = this->SavedCameraRotation;
 }
 
 void ACharacterController::StopCameraToPlayerMovement()
 {
+	GetPlayerState<ACharacterState>()->SetIsInLooking(true);
+	
+	this->bEnableClickEvents = false;
 }

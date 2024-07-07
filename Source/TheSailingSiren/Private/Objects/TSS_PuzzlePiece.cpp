@@ -4,6 +4,23 @@
 #include "Objects/TSS_PuzzlePiece.h"
 
 
+bool GetLinePlaneIntersection(const FVector& LineStart, const FVector& LineEnd, const FVector& PlanePoint, const FVector& PlaneNormal, FVector& Intersection)
+{
+	FVector LineDirection = LineEnd - LineStart;
+	float DotProduct = FVector::DotProduct(LineDirection, PlaneNormal);
+	if (FMath::Abs(DotProduct) > KINDA_SMALL_NUMBER)
+	{
+		float T = FVector::DotProduct(PlanePoint - LineStart, PlaneNormal) / DotProduct;
+		if (T >= 0.0f && T <= 1.0f)
+		{
+			Intersection = LineStart + T * LineDirection;
+			return true;
+		}
+	}
+	return false;
+}
+
+
 // Sets default values
 APuzzlePiece::APuzzlePiece()
 {
@@ -19,12 +36,52 @@ APuzzlePiece::APuzzlePiece()
 	this->BoardMesh->SetNotifyRigidBodyCollision(true);
 	this->BoardMesh->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
 
+	this->BoardMesh->SetGenerateOverlapEvents(true);
+	this->BoardMesh->SetCollisionObjectType(ECC_WorldDynamic);
+	this->BoardMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	this->BoardMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+	this->BoardMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	this->BoardMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+
+	this->BoardMesh->OnClicked.AddDynamic(this, &APuzzlePiece::OnClicked);
 	this->BoardMesh->OnReleased.AddDynamic(this, &APuzzlePiece::OnRelease);
+}
+
+void APuzzlePiece::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
+{
+	this->bStickToMouse = true;
+
+	// Get Moues Position in World Space
+	FVector WorldLocation, WorldDirection;
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	PlayerController->DeprojectMousePositionToWorld(WorldLocation, WorldDirection);
+
+	FVector Start = WorldLocation;
+	FVector End = WorldLocation + WorldDirection * 1000;
+
+	FHitResult HitResult;
+
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility);
+
+	FVector CurrentActorLocation = GetActorLocation();
+	
+	this->MouseOffset = HitResult.ImpactPoint - CurrentActorLocation;
+
+	CurrentActorLocation.Z += 1;
+	SetActorLocation(CurrentActorLocation);
 }
 
 void APuzzlePiece::OnRelease(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased)
 {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Released"));
+	FVector CurrentLocation = this->GetActorLocation();
+	CurrentLocation.Z -= 1;
+	
+	SetActorLocation(CurrentLocation);
+	
+	// if the piece is close to the lock position, lock it
+	LockNearPosition();
+	this->bStickToMouse = false;
 }
 
 // Called when the game starts or when spawned
@@ -38,6 +95,38 @@ void APuzzlePiece::BeginPlay()
 void APuzzlePiece::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if(!this->bStickToMouse) return;
+	
+	// Get Moues Position in World Space
+	FVector MousePosition;
+	FVector MouseDirection;
+	const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	PlayerController->DeprojectMousePositionToWorld(MousePosition, MouseDirection);
+
+	const FVector EndPoint = MousePosition + MouseDirection * 1000;
+
+	const FVector PlanePoint = GetActorLocation();
+	const FVector PlaneNormal = FVector(0, 0, 1);
+
+	FVector Intersection;
+
+	GetLinePlaneIntersection(MousePosition, EndPoint, PlanePoint, PlaneNormal, Intersection);
+
+	SetActorLocation(Intersection - this->MouseOffset);
+
+	//if(PlayerController->IsInputKeyDown(EKeys::Q))
+	//{
+	//	FQuat Rotation = FQuat(FRotator(0, 5, 0));
+	//	FQuat NewRotation = Rotation * GetActorQuat();
+	//	SetActorRotation(NewRotation);
+	//}
+	//
+	//if (PlayerController->IsInputKeyDown(EKeys::E))
+	//{
+	//	FQuat Rotation = FQuat(FRotator(0, -5, 0));
+	//	FQuat NewRotation = Rotation * GetActorQuat();
+	//	SetActorRotation(NewRotation);
+	//}
 }
 
 void APuzzlePiece::SetLockPosition(FVector Position)
@@ -51,12 +140,12 @@ void APuzzlePiece::LockNearPosition()
 	FVector CurrentLocation = this->GetActorLocation();
 	// Get the distance between the current location and the lock position
 	FVector Distance = this->LockPosition - CurrentLocation;
+
 	// If the distance is less than 10 units, lock the piece to the lock position
 	if (Distance.Size() < 5.f)
 	{
 		this->SetActorLocation(this->LockPosition);
 	}
 }
-
 
 

@@ -79,12 +79,14 @@ void ATheSailingSirenCharacter::StartMovementCameraToTarget(const FVector& Targe
 void ATheSailingSirenCharacter::MoveCameraToTarget(const float DeltaSeconds)
 {
 	// Move the camera to the target location
-	const FVector NewLocation = FMath::VInterpTo(this->FollowCamera->GetComponentLocation(), this->CameraTargetLocation, DeltaSeconds, 2.0f);
+	const FVector NewLocation = FMath::VInterpTo(this->FollowCamera->GetComponentLocation(), this->CameraTargetLocation, DeltaSeconds, 5.0f);
 	
 	this->FollowCamera->SetWorldLocation(NewLocation);
 
 	if(FVector::Distance(this->FollowCamera->GetComponentLocation(), this->CameraTargetLocation) < 0.5f)
 	{
+		//this->FollowCamera->SetProjectionMode(ECameraProjectionMode::Type::Orthographic);
+		//this->FollowCamera->SetOrthoWidth(100.f);
 		this->FollowCamera->SetWorldLocation(this->CameraTargetLocation);
 		this->bIsCameraMoving = false;
 	}

@@ -37,22 +37,23 @@ void APuzzleRiddle::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// The locations for the pieces to solve the puzzle
 	if (this->PieceLocations.Num() == 0)
 	{
-		this->PieceLocations.Add(FVector(-17.5, -12.5, 0));
-		this->PieceLocations.Add(FVector(-11, 9.16, 0));
-		this->PieceLocations.Add(FVector(8.5, -14, 0));
-		this->PieceLocations.Add(FVector(16.5, -6.8, 0));
-		this->PieceLocations.Add(FVector(7.57, -2.15, 0));
-		this->PieceLocations.Add(FVector(-6, -14.8, 0));
-		this->PieceLocations.Add(FVector(-13.5, -19, 0));
-		this->PieceLocations.Add(FVector(-17.5, 14.16, 0));
-		this->PieceLocations.Add(FVector(-6.7, -2.8, 0));
-		this->PieceLocations.Add(FVector(-16.25, 1.3, 0));
-		this->PieceLocations.Add(FVector(-9, 13.3, 0));
-		this->PieceLocations.Add(FVector(15.3, 12.9, 0));
-		this->PieceLocations.Add(FVector(4.82, 13.7, 0));
-		this->PieceLocations.Add(FVector(2.5, 8.9, 0));
+		this->PieceLocations.Add(FVector(12.441857, -16.871005, 0.5));
+		this->PieceLocations.Add(FVector(-9.410215, -10.403937, 0.5));
+		this->PieceLocations.Add(FVector(13.727427, 9.335097, 0.5));
+		this->PieceLocations.Add(FVector(6.933628, 16.886237, 0.5));
+		this->PieceLocations.Add(FVector(1.845227, 7.947327, 0.5));
+		this->PieceLocations.Add(FVector(14.608934, -5.14645, 0.5));
+		this->PieceLocations.Add(FVector(18.728416, -12.720832, 0.5));
+		this->PieceLocations.Add(FVector(-14.132958, -17.091088, 0.5));
+		this->PieceLocations.Add(FVector(2.822082, -6.307995, 0.5));
+		this->PieceLocations.Add(FVector(-1.267274, -15.700497, 0.5));
+		this->PieceLocations.Add(FVector(-13.897348, -8.331063, 0.5));
+		this->PieceLocations.Add(FVector(-12.908943, 15.786153, 0.5));
+		this->PieceLocations.Add(FVector(-14.038683,5.442224, 0.5));
+		this->PieceLocations.Add(FVector(-9.403979, 3.043186, 0.5));
 	}
 
 	int Index = 0;
@@ -71,10 +72,14 @@ void APuzzleRiddle::BeginPlay()
 
 		RandomX += Location.X;
 		RandomY += Location.Y;
-		
 
-		NewPiece->SetActorLocation(FVector(RandomX, RandomY, Location.Z + 1));
-		NewPiece->SetActorRotation(this->GetActorRotation());
+		NewPiece->SetActorLocation(FVector(RandomX, RandomY, Location.Z + 0.5f));
+
+		//// Get random rotation for the piece with 5 degree increments
+		//float RandomYawRotation = FMath::RandRange(0, 360);
+		//RandomYawRotation = FMath::RoundToFloat(RandomYawRotation / 5) * 5;
+		//
+		//NewPiece->SetActorRotation(FRotator(0, RandomYawRotation, 0));
 
 		// Set the target location for the piece
 		NewPiece->SetLockPosition(this->GetActorLocation() + this->PieceLocations[Index]);

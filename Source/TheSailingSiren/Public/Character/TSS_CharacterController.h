@@ -80,7 +80,10 @@ private:
 	FRotator SavedCameraRotation;	
 	FRotator TargetCameraRotation;
 	bool bIsLooking = false;
+	bool bIsInPuzzleMovement = false;
 	float InterpSpeed = 30.0f ;
 
-	float InteractionRange = 300.0f;	
+	float InteractionRange = 300.0f;
+
+	
 };

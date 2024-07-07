@@ -23,6 +23,9 @@ public:
 	UStaticMeshComponent* BoardMesh;
 
 	UFUNCTION()
+	void OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
+	
+	UFUNCTION()
 	void OnRelease(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased);
 
 protected:
@@ -48,4 +51,9 @@ private:
 	FRotator PieceRotation;
 
 	FVector LockPosition;
+
+	FVector MouseOffset;
+
+	bool bIsInRiddle = false;
+	bool bStickToMouse = false;
 };
