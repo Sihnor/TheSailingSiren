@@ -12,6 +12,22 @@ class THESAILINGSIREN_API AMot : public APawn
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USceneComponent* Root;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	USkeletalMeshComponent* Mesh;
+	
+
+	/** Plaer Position for Mot */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UPlayerPosition* PlayerPosition;
+	
+	/** Jump Position for Mot */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UJumpPosition* JumpPosition;
+
+public:
 	// Sets default values for this pawn's properties
 	AMot();
 

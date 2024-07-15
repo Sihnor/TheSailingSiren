@@ -9,6 +9,7 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "NPC/Mot/TSS_JumpPosition.h"
+#include "NPC/Mot/TSS_PlayerPosition.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -60,15 +61,16 @@ void ATheSailingSirenCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
-	
-	this->JumpPosition->LockPosition(this->GetActorLocation());
-	this->JumpPosition->SetPosition();
+
+	this->PlayerPosition->SetPlayerPosition(this->GetActorLocation());
 }
 
 void ATheSailingSirenCharacter::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	this->PlayerPosition->SetPlayerPosition(this->GetActorLocation());
+	
 	if(this->bIsCameraMoving)
 	{
 		this->MoveCameraToTarget(DeltaSeconds);
@@ -92,7 +94,7 @@ void ATheSailingSirenCharacter::Tick(const float DeltaSeconds)
 	// Check if the player is further away from the Jump Point
 	if (this->bIsFurtherAway)
 	{
-		if (FVector::Distance(this->JumpPosition->GetPosition(), this->GetActorLocation()) > 750.f)
+		if (FVector::Distance(this->JumpPosition->GetPosition(), this->GetActorLocation()) > 800.f)
 		{
 			this->JumpPosition->SetPosition();
 			this->bIsFurtherAway = false;

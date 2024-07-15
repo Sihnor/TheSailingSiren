@@ -9,7 +9,7 @@
 /**
  * 
  */
-DECLARE_MULTICAST_DELEGATE(FOnPositionChanged);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPositionChanged);
 
 UCLASS()
 class THESAILINGSIREN_API UJumpPosition : public UDataAsset
@@ -17,17 +17,25 @@ class THESAILINGSIREN_API UJumpPosition : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(BlueprintAssignable)
 	FOnPositionChanged OnPositionChanged;
 	
 	UFUNCTION(BlueprintCallable)
 	FVector GetPosition() const { return NewPosition; }
 
+	/**
+	 * Locks the position of the object
+	 * @param lockPosition The position to lock the object to
+	 */
 	UFUNCTION(BlueprintCallable)
 	void LockPosition(FVector lockPosition)
 	{
 		this->LockedPosition = lockPosition;
 	}
-	
+
+	/**
+	 * Sets the position of the object to the locked position
+	 */
 	UFUNCTION(BlueprintCallable)
 	void SetPosition()
 	{
