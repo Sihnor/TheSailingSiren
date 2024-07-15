@@ -1,7 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "TheSailingSirenGameMode.h"
-#include "TheSailingSiren/Public/Character/TSS_Character.h"
+#include "GameMode/TSS_GameMode.h"
+
+#include "Enums/CurrentPlayState.h"
 #include "UObject/ConstructorHelpers.h"
 
 ATheSailingSirenGameMode::ATheSailingSirenGameMode()
@@ -12,4 +13,6 @@ ATheSailingSirenGameMode::ATheSailingSirenGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+
+	this->CurrentPlayState = ECurrentPlayState::RiddleOne;
 }

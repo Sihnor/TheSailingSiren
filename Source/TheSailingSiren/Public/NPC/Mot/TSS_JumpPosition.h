@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "JumpPosition.generated.h"
+#include "TSS_JumpPosition.generated.h"
 
 /**
  * 
@@ -20,16 +20,25 @@ public:
 	FOnPositionChanged OnPositionChanged;
 	
 	UFUNCTION(BlueprintCallable)
-	FVector GetPosition() const { return Position; }
+	FVector GetPosition() const { return NewPosition; }
 
 	UFUNCTION(BlueprintCallable)
-	void SetPosition(const FVector NewPosition)
+	void LockPosition(FVector lockPosition)
 	{
-		this->Position = NewPosition;
+		this->LockedPosition = lockPosition;
+	}
+	
+	UFUNCTION(BlueprintCallable)
+	void SetPosition()
+	{
+		this->NewPosition = this->LockedPosition;
 		OnPositionChanged.Broadcast();
 	}
 
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivate= "true"))
-	FVector Position;
+	FVector NewPosition;
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivate= "true"))
+	FVector LockedPosition;
 };

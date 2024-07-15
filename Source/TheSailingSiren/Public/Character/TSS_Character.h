@@ -35,6 +35,10 @@ class ATheSailingSirenCharacter : public ACharacter
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
+
+	/** Jump Position for Mot */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UJumpPosition* JumpPosition;
 	
 public:
 	ATheSailingSirenCharacter();
@@ -61,5 +65,8 @@ public:
 private:
 	bool bIsCameraMoving = false;
 	FVector CameraTargetLocation;
+
+
+	bool bIsFurtherAway = false;
 };
 

@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
+#include "NPC/Mot/TSS_JumpPosition.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -51,13 +52,17 @@ ATheSailingSirenCharacter::ATheSailingSirenCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	
 }
 
 void ATheSailingSirenCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
-
+	
+	this->JumpPosition->LockPosition(this->GetActorLocation());
+	this->JumpPosition->SetPosition();
 }
 
 void ATheSailingSirenCharacter::Tick(const float DeltaSeconds)
@@ -67,6 +72,32 @@ void ATheSailingSirenCharacter::Tick(const float DeltaSeconds)
 	if(this->bIsCameraMoving)
 	{
 		this->MoveCameraToTarget(DeltaSeconds);
+	}
+
+	// Check if the player is further away from the Jump Point
+	if (!this->bIsFurtherAway)
+	{
+		if (FVector::Distance(this->JumpPosition->GetPosition(), this->GetActorLocation()) > 500.f)
+		{
+			this->bIsFurtherAway = true;
+			this->JumpPosition->LockPosition(this->GetActorLocation());
+		}
+		else
+		{
+			this->bIsFurtherAway = false;
+		}
+		return;
+	}
+
+	// Check if the player is further away from the Jump Point
+	if (this->bIsFurtherAway)
+	{
+		if (FVector::Distance(this->JumpPosition->GetPosition(), this->GetActorLocation()) > 750.f)
+		{
+			this->JumpPosition->SetPosition();
+			this->bIsFurtherAway = false;
+		}
+		return;
 	}
 }
 
