@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "TSS_NotSuitablePiece.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWringPieceFound);
+
 UCLASS()
 class THESAILINGSIREN_API ANotSuitablePiece : public AActor
 {
@@ -15,12 +17,18 @@ public:
 	// Sets default values for this actor's properties
 	ANotSuitablePiece();
 
+	FOnWringPieceFound OnWrongPieceFound;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USceneComponent* Root;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
+	UStaticMeshComponent* PieceMesh;
+
 public:
 	UFUNCTION()
 	void OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
-	
-	UFUNCTION()
-	void OnRelease(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased);
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,10 +38,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetRightPiece(const bool IsRight) { this->bIsRightPiece = IsRight; }
 	bool IsRightPiece() const { return this->bIsRightPiece; }
+	
 
 private:
 
 private:
-	bool bIsRightPiece = false;
+	bool bIsRightPiece = true;
 };
