@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Character/TSS_Character.h"
 #include "Character/TSS_CharacterState.h"
+#include "Interfaces/TSS_CollectibleItem.h"
 #include "Interfaces/TSS_RiddleInteractable.h"
 
 void ACharacterController::BeginPlay()
@@ -133,13 +134,20 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, WorldLocation + WorldDirection * this->InteractionRange, ECollisionChannel::ECC_Visibility, CollisionQueryParams))
 		{
+			AActor* HitActor = HitResult.GetActor();
 			
-			if (IRiddleInteractable* InteractableObject = Cast<IRiddleInteractable>(HitResult.GetActor()))
+			if (IRiddleInteractable* InteractableObject = Cast<IRiddleInteractable>(HitActor))
 			{
-				const USceneComponent* PuzzleCamera = InteractableObject->Execute_Interact(HitResult.GetActor());
+				const USceneComponent* PuzzleCamera = InteractableObject->Execute_Interact(HitActor);
 
 				StartCameraToPuzzleMovement(PuzzleCamera->GetComponentLocation(), PuzzleCamera->GetComponentRotation());
 			}
+
+			if(Cast<ICollectibleItem>(HitActor))
+			{
+				CollectItem(HitActor);
+			}
+			
 		}
 	}
 }
@@ -245,4 +253,18 @@ void ACharacterController::StopCameraToPlayerMovement()
 	GetPlayerState<ACharacterState>()->SetIsInLooking(true);
 	
 	this->bEnableClickEvents = false;
+}
+
+void ACharacterController::CollectItem(AActor* Item) const
+{
+	if (ICollectibleItem* CollectibleItem = Cast<ICollectibleItem>(Item))
+	{
+		ACharacterState* CharacterState = GetPlayerState<ACharacterState>();
+		if(CharacterState)
+		{
+			CharacterState->AddItemToInventory(Item);
+		}
+		
+		CollectibleItem->Collect();
+	}
 }

@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerState.h"
 #include "TSS_CharacterState.generated.h"
 
+class ICollectibleItem;
 /**
  * 
  */
@@ -14,6 +15,19 @@ class THESAILINGSIREN_API ACharacterState : public APlayerState
 {
 	GENERATED_BODY()
 
+	ACharacterState();
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	TArray<TScriptInterface<ICollectibleItem>> Inventory;
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void AddItemToInventory(TScriptInterface<ICollectibleItem> Item);
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	TArray<TScriptInterface<ICollectibleItem>> GetInventory() const { return this->Inventory; }
+	
 public:
 	bool IsInRiddle() const { return this->bIsInRiddle; }
 	void SetIsInRiddle(const bool NewState)
@@ -49,6 +63,7 @@ public:
 		this->bIsInTransition = NewState;
 	}
 
+	virtual void Tick(float DeltaSeconds) override;
 	
 private:
 	bool bIsInRiddle = false;

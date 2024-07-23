@@ -72,6 +72,8 @@ private:
 	void StopCameraToPuzzleMovement();
 	void StartCameraToPlayerMovement();
 	void StopCameraToPlayerMovement();
+
+	void CollectItem(AActor* Item) const;
 	
 private:
 	FVector SavedCameraPosition;
