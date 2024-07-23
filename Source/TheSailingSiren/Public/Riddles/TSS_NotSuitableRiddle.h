@@ -18,11 +18,10 @@ public:
 	TSubclassOf<ANotSuitablePiece> Piece;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Riddle")
-	TArray<UMaterial*> NotSuitableMaterials;
+	TArray<UMaterial*> SuitableMaterials;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Riddle")
-	TArray<UMaterial*> SuitableMaterials;
-	
+	TArray<UMaterial*> NotSuitableMaterials;
 public:
 	// Sets default values for this actor's properties
 	ANotSuitableRiddle();
@@ -43,9 +42,10 @@ private:
 	UFUNCTION()
 	void StartNextRound();
 
-	bool CheckForAnotherRound();
+	bool CheckForAnotherRound() const;
 	
 private:
+	int RoundIndex = 0;
 	// The placement of the wrong pieces as binary
 	int RightPlaces = 0;
 	int RightIndex = 0;

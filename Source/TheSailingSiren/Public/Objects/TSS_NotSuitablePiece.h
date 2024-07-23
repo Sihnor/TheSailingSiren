@@ -41,9 +41,6 @@ public:
 	void SetRightPiece(const bool IsRight) { this->bIsRightPiece = IsRight; }
 	bool IsRightPiece() const { return this->bIsRightPiece; }
 	
-
-private:
-
 private:
 	bool bIsRightPiece = true;
 };

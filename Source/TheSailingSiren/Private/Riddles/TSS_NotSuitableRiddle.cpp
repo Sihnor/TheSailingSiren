@@ -59,7 +59,7 @@ void ANotSuitableRiddle::StartRiddle()
 
 		if(WrongIndex == i)
 		{
-			NewPiece->PieceMesh->SetMaterial(0, this->NotSuitableMaterials[FMath::RandRange(0, this->NotSuitableMaterials.Num() - 1)]);
+			NewPiece->PieceMesh->SetMaterial(0, this->NotSuitableMaterials[this->RoundIndex]);
 			NewPiece->SetRightPiece(false);
 			
 			this->CurrentWrongPiece = NewPiece;
@@ -69,12 +69,15 @@ void ANotSuitableRiddle::StartRiddle()
 		}
 		else
 		{
-			int MaterialIndex = FMath::RandRange(0, this->SuitableMaterials.Num() - 1);
+			const int Min = this->RoundIndex * 4;
+			const int MaterialIndex = FMath::RandRange(Min, Min + 4);
+			
 			NewPiece->PieceMesh->SetMaterial(0, this->SuitableMaterials[MaterialIndex]);
 			this->AllRightPieces.Add(NewPiece);
 		}
-
 	}
+	
+	this->RoundIndex++;
 }
 
 void ANotSuitableRiddle::StartNextRound()
@@ -91,7 +94,7 @@ void ANotSuitableRiddle::StartNextRound()
 	StartRiddle();
 }
 
-bool ANotSuitableRiddle::CheckForAnotherRound()
+bool ANotSuitableRiddle::CheckForAnotherRound() const
 {
 	for (size_t i = 0; i < 5; i++)
 	{
