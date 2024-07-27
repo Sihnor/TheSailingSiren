@@ -16,7 +16,7 @@ ARaven::ARaven()
 	this->Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(this->Root);
 
-	this->MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	this->MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComponent"));
 	this->MeshComponent->SetupAttachment(this->Root);
 
 	this->MeshComponent->OnClicked.AddUniqueDynamic(this, &ARaven::OnRavenClicked);

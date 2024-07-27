@@ -32,8 +32,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Raven", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* Root;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Raven", meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* MeshComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Raven", meta = (AllowPrivateAccess = "true"))
+	class USkeletalMeshComponent* MeshComponent;
 
 	UFUNCTION()
 	void PlayHintForRiddleOne();
