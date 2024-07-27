@@ -32,19 +32,6 @@ AItem::AItem()
 	this->ItemMesh->OnClicked.AddDynamic(this, &AItem::OnClicked);
 }
 
-// Called when the game starts or when spawned
-void AItem::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AItem::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void AItem::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
 	Collect();

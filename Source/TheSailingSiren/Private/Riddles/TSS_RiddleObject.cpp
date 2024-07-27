@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Objects/TSS_RiddleObject.h"
+#include "Riddles/TSS_RiddleObject.h"
 
 
 // Sets default values
@@ -22,19 +22,6 @@ ARiddleObject::ARiddleObject()
 	
 	Mesh->SetNotifyRigidBodyCollision(true);
 	Mesh->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
-}
-
-// Called when the game starts or when spawned
-void ARiddleObject::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ARiddleObject::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 const USceneComponent*  ARiddleObject::Interact_Implementation()

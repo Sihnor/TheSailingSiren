@@ -37,10 +37,3 @@ void ACandleRiddle::BeginPlay()
 		this->Candles[i]->ConnectRiddle(this, i);
 	}
 }
-
-// Called every frame
-void ACandleRiddle::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-

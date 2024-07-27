@@ -35,9 +35,6 @@ protected:
 	void OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	UFUNCTION()
 	void NotifyCandleLit();
 	void ConnectRiddle(ACandleRiddle* Riddle, int Index);

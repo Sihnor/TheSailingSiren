@@ -12,19 +12,8 @@ APuzzleRiddle::APuzzleRiddle()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	this->Root = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-	RootComponent = this->Root;
-
-	this->BoardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoardMesh"));
-	this->BoardMesh->SetupAttachment(this->Root);
-
-	this->CameraPosition = CreateDefaultSubobject<USceneComponent>(TEXT("CameraPosition"));
-	this->CameraPosition->SetupAttachment(this->Root);
-	this->CameraPosition->SetRelativeLocation(FVector(0.f, 0.f, 90.f));
-
-	
-	BoardMesh->SetNotifyRigidBodyCollision(true);
-	BoardMesh->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
+	this->Mesh->SetNotifyRigidBodyCollision(true);
+	this->Mesh->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
 }
 
 const USceneComponent* APuzzleRiddle::Interact_Implementation()
@@ -75,20 +64,8 @@ void APuzzleRiddle::BeginPlay()
 
 		NewPiece->SetActorLocation(FVector(RandomX, RandomY, Location.Z + 0.5f));
 
-		//// Get random rotation for the piece with 5 degree increments
-		//float RandomYawRotation = FMath::RandRange(0, 360);
-		//RandomYawRotation = FMath::RoundToFloat(RandomYawRotation / 5) * 5;
-		//
-		//NewPiece->SetActorRotation(FRotator(0, RandomYawRotation, 0));
-
-		// Set the target location for the piece
 		NewPiece->SetLockPosition(this->GetActorLocation() + this->PieceLocations[Index]);
 
 		Index++;
 	}
-}
-
-void APuzzleRiddle::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }

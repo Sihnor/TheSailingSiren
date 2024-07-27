@@ -6,12 +6,10 @@
 
 bool GetLinePlaneIntersection(const FVector& LineStart, const FVector& LineEnd, const FVector& PlanePoint, const FVector& PlaneNormal, FVector& Intersection)
 {
-	FVector LineDirection = LineEnd - LineStart;
-	float DotProduct = FVector::DotProduct(LineDirection, PlaneNormal);
-	if (FMath::Abs(DotProduct) > KINDA_SMALL_NUMBER)
+	const FVector LineDirection = LineEnd - LineStart;
+	if (const float DotProduct = FVector::DotProduct(LineDirection, PlaneNormal); FMath::Abs(DotProduct) > KINDA_SMALL_NUMBER)
 	{
-		float T = FVector::DotProduct(PlanePoint - LineStart, PlaneNormal) / DotProduct;
-		if (T >= 0.0f && T <= 1.0f)
+		if (const float T = FVector::DotProduct(PlanePoint - LineStart, PlaneNormal) / DotProduct; T >= 0.0f && T <= 1.0f)
 		{
 			Intersection = LineStart + T * LineDirection;
 			return true;
@@ -113,23 +111,9 @@ void APuzzlePiece::Tick(float DeltaTime)
 	GetLinePlaneIntersection(MousePosition, EndPoint, PlanePoint, PlaneNormal, Intersection);
 
 	SetActorLocation(Intersection - this->MouseOffset);
-
-	//if(PlayerController->IsInputKeyDown(EKeys::Q))
-	//{
-	//	FQuat Rotation = FQuat(FRotator(0, 5, 0));
-	//	FQuat NewRotation = Rotation * GetActorQuat();
-	//	SetActorRotation(NewRotation);
-	//}
-	//
-	//if (PlayerController->IsInputKeyDown(EKeys::E))
-	//{
-	//	FQuat Rotation = FQuat(FRotator(0, -5, 0));
-	//	FQuat NewRotation = Rotation * GetActorQuat();
-	//	SetActorRotation(NewRotation);
-	//}
 }
 
-void APuzzlePiece::SetLockPosition(FVector Position)
+void APuzzlePiece::SetLockPosition(const FVector& Position)
 {
 	this->LockPosition = Position;
 }
@@ -137,9 +121,9 @@ void APuzzlePiece::SetLockPosition(FVector Position)
 void APuzzlePiece::LockNearPosition()
 {
 	// Get the current location of the piece
-	FVector CurrentLocation = this->GetActorLocation();
+	const FVector CurrentLocation = this->GetActorLocation();
 	// Get the distance between the current location and the lock position
-	FVector Distance = this->LockPosition - CurrentLocation;
+	const FVector Distance = this->LockPosition - CurrentLocation;
 
 	// If the distance is less than 10 units, lock the piece to the lock position
 	if (Distance.Size() < 5.f)

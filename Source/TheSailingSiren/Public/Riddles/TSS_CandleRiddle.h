@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Objects/TSS_RiddleObject.h"
+#include "Riddles/TSS_RiddleObject.h"
 #include "TSS_CandleRiddle.generated.h"
 
 class ACandlePiece;
@@ -29,10 +29,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 private:
 	int LitCandles = 0;

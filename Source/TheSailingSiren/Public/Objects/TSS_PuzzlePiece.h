@@ -42,7 +42,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetLockPosition(FVector Position);
+	void SetLockPosition(const FVector& Position);
 	void LockNearPosition();
 
 private:

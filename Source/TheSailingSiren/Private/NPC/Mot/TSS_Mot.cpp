@@ -18,19 +18,6 @@ AMot::AMot()
 	
 }
 
-// Called when the game starts or when spawned
-void AMot::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AMot::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 // Called to bind functionality to input
 void AMot::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

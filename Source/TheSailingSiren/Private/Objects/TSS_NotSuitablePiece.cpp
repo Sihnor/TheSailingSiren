@@ -36,17 +36,3 @@ void ANotSuitablePiece::OnClicked(UPrimitiveComponent* TouchedComponent, FKey Bu
 		this->OnWrongPieceFound.Broadcast();
 	}
 }
-
-// Called when the game starts or when spawned
-void ANotSuitablePiece::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ANotSuitablePiece::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-

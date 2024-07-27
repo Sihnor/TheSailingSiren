@@ -51,12 +51,6 @@ void ACandlePiece::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonP
 	if(this->bIsLit) this->CandleMesh->SetMaterial(0, this->LitMaterial);
 }
 
-// Called every frame
-void ACandlePiece::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void ACandlePiece::NotifyCandleLit()
 {
 	this->bIsLit = false;

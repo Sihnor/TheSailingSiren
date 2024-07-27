@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "../../Public/Riddles/TSS_BirdCageRiddle.h"
+#include "Riddles/TSS_BirdCageRiddle.h"
 
 #include "Components/Button.h"
 

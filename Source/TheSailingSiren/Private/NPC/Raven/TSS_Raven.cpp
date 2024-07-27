@@ -22,19 +22,6 @@ ARaven::ARaven()
 	this->MeshComponent->OnClicked.AddUniqueDynamic(this, &ARaven::OnRavenClicked);
 }
 
-// Called when the game starts or when spawned
-void ARaven::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void ARaven::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 // Called to bind functionality to input
 void ARaven::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

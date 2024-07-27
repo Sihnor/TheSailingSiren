@@ -21,12 +21,6 @@ void ANotSuitableRiddle::BeginPlay()
 	
 }
 
-// Called every frame
-void ANotSuitableRiddle::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 const USceneComponent* ANotSuitableRiddle::Interact_Implementation()
 {
 	return this->CameraPosition;
