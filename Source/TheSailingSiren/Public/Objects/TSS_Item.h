@@ -18,6 +18,9 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* ItemMesh;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	FString ItemName;
 	
 public:
 	UFUNCTION()
@@ -38,8 +41,4 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-
-private:
-	FString ItemName;
 };

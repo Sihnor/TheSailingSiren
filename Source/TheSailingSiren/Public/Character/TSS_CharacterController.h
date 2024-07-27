@@ -45,9 +45,23 @@ class THESAILINGSIREN_API ACharacterController : public APlayerController
 
 #pragma endregion
 
+public:
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsWalking() const { return bIsWalking; }
+	
+	UFUNCTION(BlueprintCallable)
+	bool GetIsCollecting() const { return bIsCollecting; }
+
+	UFUNCTION(BlueprintCallable)
+	void ResetIsCollecting();
+	
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+	void StartMove();
+	void StopMove();
 	virtual void SetupInputComponent() override;
 	
 protected:
@@ -74,7 +88,7 @@ private:
 	void StopCameraToPlayerMovement();
 
 	void CollectItem(AActor* Item) const;
-	
+
 private:
 	FVector SavedCameraPosition;
 	FVector TargetCameraPosition;
@@ -87,5 +101,6 @@ private:
 
 	float InteractionRange = 300.0f;
 
-	
+	bool bIsCollecting = false;
+	bool bIsWalking = false;
 };

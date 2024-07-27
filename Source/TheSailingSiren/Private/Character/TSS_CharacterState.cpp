@@ -24,7 +24,7 @@ void ACharacterState::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if(GEngine) GEngine->AddOnScreenDebugMessage(-1, .1f, FColor::Red, TEXT("Inventory:"));
+//	if(GEngine) GEngine->AddOnScreenDebugMessage(-1, .1f, FColor::Red, TEXT("Inventory:"));
 	
 	for (auto Element : this->Inventory)
 	{

@@ -9,6 +9,11 @@
 #include "Character/TSS_CharacterState.h"
 #include "Interfaces/TSS_CollectibleItem.h"
 #include "Interfaces/TSS_RiddleInteractable.h"
+#include "TimerManager.h"
+
+void ACharacterController::ResetIsCollecting()
+{ { this->bIsCollecting = false; }
+}
 
 void ACharacterController::BeginPlay()
 {
@@ -67,6 +72,16 @@ void ACharacterController::Tick(float DeltaSeconds)
 	}
 }
 
+void ACharacterController::StartMove()
+{
+	this->bIsWalking = true;
+}
+
+void ACharacterController::StopMove()
+{
+	this->bIsWalking = false;
+}
+
 void ACharacterController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -80,6 +95,8 @@ void ACharacterController::SetupInputComponent()
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACharacterController::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this, &ACharacterController::StartMove);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &ACharacterController::StopMove);
 
 		// Start Looking
 		EnhancedInputComponent->BindAction(StartLookAction, ETriggerEvent::Started, this, &ACharacterController::StartLooking);
@@ -146,6 +163,12 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 			if(Cast<ICollectibleItem>(HitActor))
 			{
 				CollectItem(HitActor);
+				this->bIsCollecting = true;
+				
+				FTimerHandle Handle;
+				FTimerDelegate Delegate;
+				Delegate.BindUObject(this, &ACharacterController::ResetIsCollecting);
+				GetWorld()->GetTimerManager().SetTimer(Handle, Delegate, 1.0f, false);
 			}
 			
 		}
