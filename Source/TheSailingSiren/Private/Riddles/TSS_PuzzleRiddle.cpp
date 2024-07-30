@@ -18,7 +18,7 @@ APuzzleRiddle::APuzzleRiddle()
 
 const USceneComponent* APuzzleRiddle::Interact_Implementation()
 {
-	return this->CameraPosition;
+	return Super::Interact_Implementation();
 }
 
 // Called when the game starts or when spawned

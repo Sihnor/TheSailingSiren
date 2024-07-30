@@ -155,9 +155,8 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 			
 			if (IRiddleInteractable* InteractableObject = Cast<IRiddleInteractable>(HitActor))
 			{
-				const USceneComponent* PuzzleCamera = InteractableObject->Execute_Interact(HitActor);
-
-				StartCameraToPuzzleMovement(PuzzleCamera->GetComponentLocation(), PuzzleCamera->GetComponentRotation());
+				if (const USceneComponent* PuzzleCamera = InteractableObject->Execute_Interact(HitActor))
+					StartCameraToPuzzleMovement(PuzzleCamera->GetComponentLocation(), PuzzleCamera->GetComponentRotation());
 			}
 
 			if(Cast<ICollectibleItem>(HitActor))

@@ -3,6 +3,8 @@
 
 #include "Riddles/TSS_RiddleObject.h"
 
+#include "GameMode/TSS_GameMode.h"
+
 
 // Sets default values
 ARiddleObject::ARiddleObject()
@@ -26,5 +28,13 @@ ARiddleObject::ARiddleObject()
 
 const USceneComponent*  ARiddleObject::Interact_Implementation()
 {
+	// Get GameMode
+	const ATheSailingSirenGameMode* GameMode = Cast<ATheSailingSirenGameMode>(GetWorld()->GetAuthGameMode());
+	if (GameMode == nullptr) return nullptr;
+	if (GameMode->GetCurrentPlayState() != this->RiddleState)
+	{
+		return nullptr;
+	}
+	
 	return this->CameraPosition;
 }
