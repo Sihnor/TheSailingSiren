@@ -9,6 +9,8 @@
 void ATheSailingSirenGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+return;
+
 		for (int i = 0; i < this->AllRiddles.Num(); i++)
 		{
 			this->AllRiddles[i]->OnRiddleSolved.AddUniqueDynamic(this, &ATheSailingSirenGameMode::OnRiddleSolved);

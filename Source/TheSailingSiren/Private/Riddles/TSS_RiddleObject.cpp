@@ -31,10 +31,10 @@ const USceneComponent*  ARiddleObject::Interact_Implementation()
 	// Get GameMode
 	const ATheSailingSirenGameMode* GameMode = Cast<ATheSailingSirenGameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode == nullptr) return nullptr;
-	if (GameMode->GetCurrentPlayState() != this->RiddleState)
-	{
-		return nullptr;
-	}
+	//if (GameMode->GetCurrentPlayState() != this->RiddleState)
+	//{
+	//	return nullptr;
+	//}
 	
 	return this->CameraPosition;
 }
