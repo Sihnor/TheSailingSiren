@@ -66,14 +66,16 @@ void APuzzlePiece::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonP
 	
 	this->MouseOffset = HitResult.ImpactPoint - CurrentActorLocation;
 
-	CurrentActorLocation.Z += 1;
+	CurrentActorLocation.Z += 1.5f;
 	SetActorLocation(CurrentActorLocation);
 }
 
 void APuzzlePiece::OnRelease(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased)
 {
+	if(!this->bStickToMouse) return;
+	
 	FVector CurrentLocation = this->GetActorLocation();
-	CurrentLocation.Z -= 1;
+	CurrentLocation.Z -= 0.5f;
 	
 	SetActorLocation(CurrentLocation);
 	

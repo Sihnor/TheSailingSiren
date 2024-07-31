@@ -122,8 +122,15 @@ void ATheSailingSirenCharacter::MoveCameraToTarget(const float DeltaSeconds)
 		//this->FollowCamera->SetOrthoWidth(100.f);
 		this->FollowCamera->SetWorldLocation(this->CameraTargetLocation);
 		this->bIsCameraMoving = false;
+		this->OnCameraMovementFinished.Broadcast();
 	}
 	
+}
+
+void ATheSailingSirenCharacter::GetCurrentCameraTransform(FVector& OutLocation, FRotator& OutRotation) const
+{
+	OutLocation = this->FollowCamera->GetComponentLocation();
+	OutRotation = this->FollowCamera->GetComponentRotation();
 }
 
 //////////////////////////////////////////////////////////////////////////

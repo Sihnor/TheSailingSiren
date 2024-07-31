@@ -80,11 +80,12 @@ private:
 	void CenterMouseCursor();
 
 	void CinematicCameraMovement(float DeltaTime);
-	void CameraMovementToPosition(float DeltaTime);
 
 	void StartCameraToPuzzleMovement(const FVector& TargetPosition, const FRotator& TargetRotation);
+	UFUNCTION()
 	void StopCameraToPuzzleMovement();
 	void StartCameraToPlayerMovement();
+	UFUNCTION()
 	void StopCameraToPlayerMovement();
 
 	void CollectItem(AActor* Item) const;

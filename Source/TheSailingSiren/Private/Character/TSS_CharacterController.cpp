@@ -35,7 +35,7 @@ void ACharacterController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	auto CharacterState = GetPlayerState<ACharacterState>();
+	const auto CharacterState = GetPlayerState<ACharacterState>();
 	
 	if (!FMath::IsNearlyEqual(this->ControlRotation.Yaw, this->TargetCameraRotation.Yaw, 0.1f))
 	{
@@ -57,7 +57,11 @@ void ACharacterController::Tick(float DeltaSeconds)
 
 	if(CharacterState->IsInRiddle())
 	{
-		
+		// On ESCAPE key press
+		if (this->WasInputKeyJustPressed(EKeys::Escape))
+		{
+			StartCameraToPlayerMovement();
+		}
 	}
 
 	if(CharacterState->IsInTransition())
@@ -232,16 +236,15 @@ void ACharacterController::CinematicCameraMovement(const float DeltaTime)
 	this->ControlRotation = NewRotation;
 }
 
-void ACharacterController::CameraMovementToPosition(float DeltaTime)
-{
-}
-
 void ACharacterController::StartCameraToPuzzleMovement(const FVector& TargetPosition, const FRotator& TargetRotation)
 {
 	GetPlayerState<ACharacterState>()->SetIsInTransition();
-	
-	this->SavedCameraPosition = this->GetCharacter()->GetActorLocation();
-	this->SavedCameraRotation = this->ControlRotation;
+
+	ATheSailingSirenCharacter* MyCharacter = Cast<ATheSailingSirenCharacter>(this->GetCharacter());
+
+	if (!MyCharacter) return;
+
+	MyCharacter->GetCurrentCameraTransform(this->SavedCameraPosition, this->SavedCameraRotation);
 	this->TargetCameraPosition = TargetPosition;
 	this->TargetCameraRotation = TargetRotation;
 
@@ -249,17 +252,18 @@ void ACharacterController::StartCameraToPuzzleMovement(const FVector& TargetPosi
 
 	this->DisableInput(this);
 
-	if (ATheSailingSirenCharacter* MyCharacter = Cast<ATheSailingSirenCharacter>(this->GetCharacter()))
-		MyCharacter->StartMovementCameraToTarget(TargetCameraPosition);
+	MyCharacter->StartMovementCameraToTarget(TargetCameraPosition);
+	MyCharacter->OnCameraMovementFinished.AddDynamic(this, &ACharacterController::StopCameraToPuzzleMovement);
 }
 
 void ACharacterController::StopCameraToPuzzleMovement()
 {
+	if (ATheSailingSirenCharacter* MyCharacter = Cast<ATheSailingSirenCharacter>(this->GetCharacter()))
+		MyCharacter->OnCameraMovementFinished.RemoveDynamic(this, &ACharacterController::StopCameraToPuzzleMovement);
+	
 	GetPlayerState<ACharacterState>()->SetIsInRiddle(true);
 	
 	this->bEnableClickEvents = true;
-
-	this->GetPlayerState<ACharacterState>()->SetIsInRiddle(true);
 }
 
 void ACharacterController::StartCameraToPlayerMovement()
@@ -268,13 +272,24 @@ void ACharacterController::StartCameraToPlayerMovement()
 	
 	this->TargetCameraPosition = this->SavedCameraPosition;
 	this->TargetCameraRotation = this->SavedCameraRotation;
+	
+	if (ATheSailingSirenCharacter* MyCharacter = Cast<ATheSailingSirenCharacter>(this->GetCharacter()))
+	{
+		MyCharacter->StartMovementCameraToTarget(TargetCameraPosition);
+		MyCharacter->OnCameraMovementFinished.AddDynamic(this, &ACharacterController::StopCameraToPlayerMovement);
+	}
 }
 
 void ACharacterController::StopCameraToPlayerMovement()
 {
+	if (ATheSailingSirenCharacter* MyCharacter = Cast<ATheSailingSirenCharacter>(this->GetCharacter()))
+		MyCharacter->OnCameraMovementFinished.RemoveDynamic(this, &ACharacterController::StopCameraToPlayerMovement);
+	
 	GetPlayerState<ACharacterState>()->SetIsInLooking(true);
 	
 	this->bEnableClickEvents = false;
+
+	this->EnableInput(this);
 }
 
 void ACharacterController::CollectItem(AActor* Item) const

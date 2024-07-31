@@ -14,6 +14,7 @@ class UInputAction;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCameraMovementFinished);
 
 UCLASS(config=Game)
 class ATheSailingSirenCharacter : public ACharacter
@@ -46,6 +47,8 @@ class ATheSailingSirenCharacter : public ACharacter
 	
 public:
 	ATheSailingSirenCharacter();
+
+	FOnCameraMovementFinished OnCameraMovementFinished;
 	
 
 protected:
@@ -65,6 +68,7 @@ public:
 	
 	void StartMovementCameraToTarget(const FVector& TargetLocation);
 	void MoveCameraToTarget(float DeltaSeconds);
+	void GetCurrentCameraTransform(FVector& OutLocation, FRotator& OutRotation) const;
 
 private:
 	bool bIsCameraMoving = false;
