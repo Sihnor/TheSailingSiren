@@ -23,7 +23,7 @@ void ANotSuitableRiddle::BeginPlay()
 
 const USceneComponent* ANotSuitableRiddle::Interact_Implementation()
 {
-	return this->CameraPosition;
+	return Super::Interact_Implementation();
 }
 
 void ANotSuitableRiddle::StartRiddle()

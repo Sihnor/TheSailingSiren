@@ -9,13 +9,13 @@
 void ATheSailingSirenGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-return;
-
-		for (int i = 0; i < this->AllRiddles.Num(); i++)
-		{
-			this->AllRiddles[i]->OnRiddleSolved.AddUniqueDynamic(this, &ATheSailingSirenGameMode::OnRiddleSolved);
-			this->AllRiddles[i]->SetRiddleIndex(static_cast<ECurrentPlayState>(i + 1));
-		}
+	
+	for (int i = 0; i < this->AllRiddles.Num(); i++)
+	{
+		if (this->AllRiddles[i] == nullptr) continue;
+		this->AllRiddles[i]->OnRiddleSolved.AddUniqueDynamic(this, &ATheSailingSirenGameMode::OnRiddleSolved);
+		this->AllRiddles[i]->SetRiddleIndex(static_cast<ECurrentPlayState>(i + 1));
+	}
 }
 
 ATheSailingSirenGameMode::ATheSailingSirenGameMode()

@@ -16,7 +16,7 @@ class ATheSailingSirenGameMode : public AGameModeBase
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Riddles", meta = (AllowPrivateAccess = "true"))
-	TArray<ARiddleObject*> AllRiddles;
+	TArray<TSoftObjectPtr<ARiddleObject>> AllRiddles;
 
 	virtual void BeginPlay() override;
 public:
