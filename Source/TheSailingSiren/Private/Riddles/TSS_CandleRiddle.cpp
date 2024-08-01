@@ -13,11 +13,27 @@ ACandleRiddle::ACandleRiddle()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-bool ACandleRiddle::NotifyCandleLit(int Index)
+void ACandleRiddle::CheckIfRiddleIsSolved()
+{
+	for (int i = 0; i < Candles.Num() - 1; i++)
+	{
+		if (!Candles[i]->GetIsLit())
+		{
+			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Candle %d is not lit!"), i));
+			return;
+		}
+	}
+
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Riddle Solved!"));
+	this->OnRiddleSolved.Broadcast(GetRiddleIndex());
+}
+
+bool ACandleRiddle::NotifyCandleLit(const int Index)
 {
 	if (this->LitCandles == Index)
 	{
 		this->LitCandles++;
+		CheckIfRiddleIsSolved();
 		return true;
 	}
 	

@@ -26,6 +26,8 @@ public:
 	TArray<FVector> PieceLocations;
 	
 protected:
+	UFUNCTION()
+	void OnPieceReleased();
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -35,5 +37,7 @@ public:
 private:
 	// Piece number and the rotation of the piece
 	TMap<int32, FRotator> RightPieceState;
+
+	TArray<APuzzlePiece*> PuzzlePieces;
 	
 };

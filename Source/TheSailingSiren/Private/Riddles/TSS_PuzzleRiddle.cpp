@@ -21,6 +21,27 @@ const USceneComponent* APuzzleRiddle::Interact_Implementation()
 	return Super::Interact_Implementation();
 }
 
+void APuzzleRiddle::OnPieceReleased()
+{
+	bool bIsSolved = true;
+
+	for (const APuzzlePiece* Piece : this->PuzzlePieces)
+	{
+		if (Piece == nullptr) continue;
+
+		if (!Piece->GetIsRightPlace())
+		{
+			bIsSolved = false;
+			break;
+		}
+	}
+
+	if (bIsSolved)
+	{
+		this->OnRiddleSolved.Broadcast(GetRiddleIndex());
+	}
+}
+
 // Called when the game starts or when spawned
 void APuzzleRiddle::BeginPlay()
 {
@@ -50,10 +71,14 @@ void APuzzleRiddle::BeginPlay()
 	for (TSubclassOf<APuzzlePiece> Piece : this->Pieces)
 	{
 		if (Piece == nullptr) continue;
+
 		const FVector Location = this->GetActorLocation();
 		
 		APuzzlePiece* NewPiece = GetWorld()->SpawnActor<APuzzlePiece>(Piece);
 		NewPiece->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+		NewPiece->OnReleasePiece.AddUniqueDynamic(this, &APuzzleRiddle::OnPieceReleased);
+		this->PuzzlePieces.Add(NewPiece);
 		
 		// Set random position within +- 16 units of the board
 		float RandomX = FMath::RandRange(-16, 16);

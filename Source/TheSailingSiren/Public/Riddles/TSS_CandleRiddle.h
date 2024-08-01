@@ -24,6 +24,7 @@ public:
 	// Sets default values for this actor's properties
 	ACandleRiddle();
 
+	void CheckIfRiddleIsSolved();
 	bool NotifyCandleLit(int Index);
 
 protected:

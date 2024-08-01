@@ -75,13 +75,15 @@ void APuzzlePiece::OnRelease(UPrimitiveComponent* TouchedComponent, FKey ButtonR
 	if(!this->bStickToMouse) return;
 	
 	FVector CurrentLocation = this->GetActorLocation();
-	CurrentLocation.Z -= 0.5f;
+	CurrentLocation.Z -= 1.5f;
 	
 	SetActorLocation(CurrentLocation);
 	
 	// if the piece is close to the lock position, lock it
 	LockNearPosition();
 	this->bStickToMouse = false;
+
+	this->OnReleasePiece.Broadcast();
 }
 
 // Called when the game starts or when spawned
@@ -131,6 +133,11 @@ void APuzzlePiece::LockNearPosition()
 	if (Distance.Size() < 5.f)
 	{
 		this->SetActorLocation(this->LockPosition);
+		this->bIsRightPlace = true;
+	}
+	else
+	{
+		this->bIsRightPlace = false;
 	}
 }
 

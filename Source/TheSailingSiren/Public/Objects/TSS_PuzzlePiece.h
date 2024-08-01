@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "TSS_PuzzlePiece.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReleasePiece);
+
 UCLASS()
 class THESAILINGSIREN_API APuzzlePiece : public AActor
 {
@@ -28,6 +30,8 @@ public:
 	UFUNCTION()
 	void OnRelease(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased);
 
+	FOnReleasePiece OnReleasePiece;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -44,6 +48,7 @@ public:
 
 	void SetLockPosition(const FVector& Position);
 	void LockNearPosition();
+	bool GetIsRightPlace() const { return this->bIsRightPlace; }
 
 private:
 	// Piece number and the rotation of the piece
@@ -56,4 +61,5 @@ private:
 
 	bool bIsInRiddle = false;
 	bool bStickToMouse = false;
+	bool bIsRightPlace = false;
 };

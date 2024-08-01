@@ -38,6 +38,7 @@ public:
 	UFUNCTION()
 	void NotifyCandleLit();
 	void ConnectRiddle(ACandleRiddle* Riddle, int Index);
+	bool GetIsLit() const { return bIsLit; }
 
 
 private:

@@ -30,11 +30,17 @@ ATheSailingSirenGameMode::ATheSailingSirenGameMode()
 	this->CurrentPlayState = ECurrentPlayState::RiddleOne;
 }
 
-void ATheSailingSirenGameMode::OnRiddleSolved(const int CurrentRiddleIndex)
+void ATheSailingSirenGameMode::OnRiddleSolved(const ECurrentPlayState CurrentRiddleIndex)
 {
-	if(this->CurrenRiddle == CurrentRiddleIndex)
+	// print CurrentRiddleIndex
+	UE_LOG(LogTemp, Warning, TEXT("Current Riddle Index: %d"), static_cast<int>(CurrentRiddleIndex));
+	// print this->CurrentPlayState
+	UE_LOG(LogTemp, Warning, TEXT("Current Play State: %d"), static_cast<int>(this->CurrentPlayState));
+	
+	if(this->CurrentPlayState == CurrentRiddleIndex)
 	{
-		this->CurrenRiddle++;
-		this->CurrentPlayState = static_cast<ECurrentPlayState>(this->CurrenRiddle);
+		int CurrentGameIndex = static_cast<int>(this->CurrentPlayState);
+		CurrentGameIndex++;
+		this->CurrentPlayState = static_cast<ECurrentPlayState>(CurrentGameIndex);
 	}
 }

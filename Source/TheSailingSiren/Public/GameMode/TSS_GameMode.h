@@ -33,10 +33,7 @@ public:
 	
 private:
 	UFUNCTION()
-	void OnRiddleSolved(int CurrentRiddleIndex);
-
-private:
-	int CurrenRiddle = 0;
+	void OnRiddleSolved(ECurrentPlayState CurrentRiddleIndex);
 };
 
 

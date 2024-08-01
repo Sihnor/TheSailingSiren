@@ -9,7 +9,7 @@
 #include "TSS_RiddleObject.generated.h"
 
 enum class ECurrentPlayState : uint8;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRiddleSolved, int, CurrentRiddleIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRiddleSolved, ECurrentPlayState, CurrentRiddleIndex);
 
 UCLASS()
 class THESAILINGSIREN_API ARiddleObject : public AActor, public IRiddleInteractable

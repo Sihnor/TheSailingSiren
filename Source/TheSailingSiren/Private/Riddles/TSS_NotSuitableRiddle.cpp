@@ -98,6 +98,7 @@ bool ANotSuitableRiddle::CheckForAnotherRound() const
 		}
 	}
 
+	this->OnRiddleSolved.Broadcast(GetRiddleIndex());
 	return false;
 }
 
