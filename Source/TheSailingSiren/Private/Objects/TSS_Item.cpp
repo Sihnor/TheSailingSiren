@@ -2,6 +2,7 @@
 
 
 #include "Objects/TSS_Item.h"
+#include "Engine/Texture.h"
 
 
 // Sets default values
@@ -40,6 +41,11 @@ void AItem::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 FString AItem::GetItemName()
 {
 	return this->ItemName;
+}
+
+UTexture2D* AItem::GetItemIcon()
+{
+	return this->ItemIcon;
 }
 
 void AItem::Collect()

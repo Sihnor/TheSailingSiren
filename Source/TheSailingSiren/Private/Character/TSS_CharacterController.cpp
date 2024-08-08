@@ -78,11 +78,13 @@ void ACharacterController::Tick(float DeltaSeconds)
 
 void ACharacterController::StartMove()
 {
+	if (this->bIsInInventory) return;
 	this->bIsWalking = true;
 }
 
 void ACharacterController::StopMove()
 {
+	if (this->bIsInInventory) return;
 	this->bIsWalking = false;
 }
 
@@ -93,10 +95,6 @@ void ACharacterController::SetupInputComponent()
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		// Jumping
-		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACharacterController::Move);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this, &ACharacterController::StartMove);
@@ -111,6 +109,9 @@ void ACharacterController::SetupInputComponent()
 
 		// Interacting
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ACharacterController::Interact);
+
+		// Inventar
+		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &ACharacterController::ShowInventory);
 	}
 	else
 	{
@@ -123,6 +124,8 @@ void ACharacterController::SetupInputComponent()
 
 void ACharacterController::Move(const FInputActionValue& Value)
 {
+	if (this->bIsInInventory) return;
+	
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -143,6 +146,8 @@ void ACharacterController::Move(const FInputActionValue& Value)
 
 void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 {
+	if (this->bIsInInventory) return;
+	
 	FVector WorldLocation;
 	FVector WorldDirection;
 
@@ -178,8 +183,25 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 	}
 }
 
+void ACharacterController::ShowInventory_Implementation()
+{
+	FInputActionValue Value;
+	this->StopLooking(Value);
+	
+	this->bIsInInventory = !this->bIsInInventory;
+
+	ACharacterState* CharacterState = GetPlayerState<ACharacterState>();
+	if(CharacterState)
+	{
+		TArray<TScriptInterface<ICollectibleItem>> Inventory = CharacterState->GetInventory();
+	}
+		
+}
+
 void ACharacterController::Look(const FInputActionValue& Value)
 {
+	if (this->bIsInInventory) return;
+	
 	if (!this->bIsLooking) return;
 
 	// input is a Vector2D
@@ -202,6 +224,8 @@ void ACharacterController::CenterMouseCursor()
 
 void ACharacterController::StartLooking(const FInputActionValue& InputActionValue)
 {
+	if (this->bIsInInventory) return;
+	
 	this->bIsLooking = true;
 
 	this->bShowMouseCursor = false;
@@ -209,6 +233,8 @@ void ACharacterController::StartLooking(const FInputActionValue& InputActionValu
 
 void ACharacterController::StopLooking(const FInputActionValue& InputActionValue)
 {
+	if (this->bIsInInventory) return;
+	
 	this->bIsLooking = false;
 	
 	this->CenterMouseCursor();

@@ -21,12 +21,16 @@ public:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	FString ItemName;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	UTexture2D* ItemIcon;
 	
 public:
 	UFUNCTION()
 	void OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
 
 	virtual FString GetItemName() override;
+	virtual UTexture2D* GetItemIcon() override;
 	
 	virtual void Collect() override;
 	
