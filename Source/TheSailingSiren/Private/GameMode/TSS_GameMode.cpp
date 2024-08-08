@@ -6,9 +6,81 @@
 #include "Riddles/TSS_RiddleObject.h"
 #include "UObject/ConstructorHelpers.h"
 
+
+void ATheSailingSirenGameMode::OnStartIntroduction_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnEndIntroduction_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::DelayMotSound()
+{
+	// Delay after 3 seconds
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATheSailingSirenGameMode::OnMotNoise, 3.0f, false);
+}
+
+void ATheSailingSirenGameMode::OnMotNoise_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnStartFirstDialogueMotAndSamael_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnStartFindTranslation_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnStartRiddleTwo_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnStartSecondDialogMotAndSamael_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnStartRiddleThreeAndFour_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnOpenTrapdoor_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnCollectLetter_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnReadLetter_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnLastDialogueMotAndSamael_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnMonologueMot_Implementation()
+{
+}
+
+void ATheSailingSirenGameMode::OnMonologueSamael_Implementation()
+{
+}
+
+
+void ATheSailingSirenGameMode::OnStartRiddleOne_Implementation()
+{
+}
+
+
 void ATheSailingSirenGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	this->OnStartIntroduction();
 	
 	for (int i = 0; i < this->AllRiddles.Num(); i++)
 	{
