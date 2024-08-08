@@ -53,6 +53,9 @@ public:
 	void OnStartSecondDialogueMotAndSamael();
 	virtual void OnStartSecondDialogMotAndSamael_Implementation();
 
+	UFUNCTION(BlueprintCallable)
+	void PlayDoorSound();
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameProgres")
 	void OnStartRiddleThreeAndFour();
 	virtual void OnStartRiddleThreeAndFour_Implementation();
@@ -101,10 +104,11 @@ public:
 public:
 	ATheSailingSirenGameMode();
 
-	
-private:
-	UFUNCTION()
+
+public:
+	UFUNCTION(BlueprintNativeEvent, Category = "GameProgres")
 	void OnRiddleSolved(ECurrentPlayState CurrentRiddleIndex);
+	void OnRiddleSolved_Implementation(ECurrentPlayState CurrentRiddleIndex);
 };
 
 
