@@ -120,6 +120,7 @@ void APuzzlePiece::Tick(float DeltaTime)
 void APuzzlePiece::SetLockPosition(const FVector& Position)
 {
 	this->LockPosition = Position;
+	this->LockPosition.Z += 0.5f;
 }
 
 void APuzzlePiece::LockNearPosition()

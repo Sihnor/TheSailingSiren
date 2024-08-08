@@ -19,6 +19,8 @@ void ACharacterController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	this->bIsInInventory = false;
+
 	//Add Input Mapping Context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(this->GetLocalPlayer()))
 	{
@@ -146,7 +148,11 @@ void ACharacterController::Move(const FInputActionValue& Value)
 
 void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 {
-	if (this->bIsInInventory) return;
+	if (this->bIsInInventory)
+	{
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Inventory"));
+		return;
+	};
 	
 	FVector WorldLocation;
 	FVector WorldDirection;
