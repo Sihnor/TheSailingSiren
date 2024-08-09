@@ -26,6 +26,16 @@ ARiddleObject::ARiddleObject()
 	Mesh->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
 }
 
+void ARiddleObject::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (!this->Letter) return;
+	this->Letter->SetActorHiddenInGame(true);
+	this->Letter->SetActorEnableCollision(false);
+	this->Letter->SetActorTickEnabled(false);
+}
+
 const USceneComponent*  ARiddleObject::Interact_Implementation()
 {
 	// Get GameMode

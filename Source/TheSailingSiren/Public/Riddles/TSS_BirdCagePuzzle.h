@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "TSS_BirdCageRiddle.generated.h"
+#include "TSS_BirdCagePuzzle.generated.h"
 
 class UImage;
 class UButton;

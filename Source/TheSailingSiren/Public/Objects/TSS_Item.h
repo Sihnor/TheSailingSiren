@@ -30,6 +30,7 @@ public:
 	void OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
 
 	virtual FString GetItemName() override;
+	UFUNCTION(BlueprintCallable)
 	virtual UTexture2D* GetItemIcon() override;
 	
 	virtual void Collect() override;
