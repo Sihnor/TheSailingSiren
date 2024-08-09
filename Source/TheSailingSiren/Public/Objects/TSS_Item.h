@@ -24,6 +24,9 @@ public:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	UTexture2D* ItemIcon;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCollect();
 	
 public:
 	UFUNCTION()

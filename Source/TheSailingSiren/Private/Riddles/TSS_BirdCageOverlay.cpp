@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Riddles/TSS_BirdCagePuzzle.h"
+#include "Riddles/TSS_BirdCageOverlay.h"
 
 #include "Components/Button.h"
 
@@ -88,6 +88,8 @@ void UBirdCagePuzzle::CheckPuzzle()
 {
 	if (ImageOneIndex == 14 && ImageTwoIndex == 15 && this->ImageThreeIndex == 4 && this->ImageFourIndex == 13)
 	{
+		this->bIsSolved = true;
+		this->OnCageSolved.Broadcast();
 		this->ImageOneUp->SetVisibility(ESlateVisibility::Hidden);
 		this->ImageOneDown->SetVisibility(ESlateVisibility::Hidden);
 		this->ImageTwoUp->SetVisibility(ESlateVisibility::Hidden);

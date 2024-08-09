@@ -83,6 +83,13 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameProgres")
 	void OnMonologueSamael();
 	virtual void OnMonologueSamael_Implementation();
+
+
+	UFUNCTION(BlueprintCallable)
+	void StartFirstDialogue();
+
+	UFUNCTION(BlueprintCallable)
+	void StartSecondDialogue();
 	
 	
 

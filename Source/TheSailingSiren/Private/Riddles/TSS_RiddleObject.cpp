@@ -45,6 +45,12 @@ const USceneComponent*  ARiddleObject::Interact_Implementation()
 	{
 		return nullptr;
 	}
-	
+
+	// print location of this->CameraPosition
+	//if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 132.f, FColor::Red, (TEXT("RIDDDLE OBJECT: %s"), this->CameraPosition->GetComponentLocation().ToString()));
 	return this->CameraPosition;
+}
+
+void ARiddleObject::StopRiddle()
+{
 }

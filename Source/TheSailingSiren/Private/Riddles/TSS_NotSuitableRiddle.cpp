@@ -44,11 +44,14 @@ void ANotSuitableRiddle::StartRiddle()
 		ANotSuitablePiece* NewPiece = GetWorld()->SpawnActor<ANotSuitablePiece>(this->Piece);
 		NewPiece->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 
+		// Set the loaction relative to the rotation of the actor
+		
 		FVector NewLocation = FVector(0.0f, -20.0f, 0.0f);
 		NewLocation.Y += i * 10.0f;
+		NewLocation = GetActorRotation().RotateVector(NewLocation);
 
 		NewLocation += this->GetActorLocation();
-
+		
 		NewPiece->SetActorLocation(NewLocation);
 
 		if(WrongIndex == i)

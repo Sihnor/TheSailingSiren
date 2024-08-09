@@ -15,6 +15,11 @@ void ACharacterController::ResetIsCollecting()
 { { this->bIsCollecting = false; }
 }
 
+void ACharacterController::StopMoveForDialog()
+{
+	this->bIsWalking = false;	
+}
+
 void ACharacterController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -62,6 +67,7 @@ void ACharacterController::Tick(float DeltaSeconds)
 		// On ESCAPE key press
 		if (this->WasInputKeyJustPressed(EKeys::Escape))
 		{
+			if (this->CurrentInteractable) this->CurrentInteractable->StopRiddle();	
 			StartCameraToPlayerMovement();
 		}
 	}
@@ -150,7 +156,6 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 {
 	if (this->bIsInInventory)
 	{
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Inventory"));
 		return;
 	};
 	
@@ -168,11 +173,22 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 		{
 			AActor* HitActor = HitResult.GetActor();
 			
-			if (IRiddleInteractable* InteractableObject = Cast<IRiddleInteractable>(HitActor))
+			//if (IRiddleInteractable* InteractableObject = Cast<IRiddleInteractable>(HitActor))
+			//{
+			//	if (const USceneComponent* PuzzleCamera = InteractableObject->Execute_Interact(HitActor))
+			//		StartCameraToPuzzleMovement(PuzzleCamera->GetComponentLocation(), PuzzleCamera->GetComponentRotation());
+			//}
+
+			this->CurrentInteractable = Cast<IRiddleInteractable>(HitActor);
+			if (this->CurrentInteractable != nullptr)
 			{
-				if (const USceneComponent* PuzzleCamera = InteractableObject->Execute_Interact(HitActor))
+				if (const USceneComponent* PuzzleCamera = this->CurrentInteractable->Execute_Interact(HitActor))
+				{
+					//FString LocationString = FString::Printf(TEXT("Actor Location: X=%f, Y=%f, Z=%f"), PuzzleCamera->GetComponentLocation().X, PuzzleCamera->GetComponentLocation().Y, PuzzleCamera->GetComponentLocation().Z);	
+					//if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 132.f, FColor::Red, LocationString);
 					StartCameraToPuzzleMovement(PuzzleCamera->GetComponentLocation(), PuzzleCamera->GetComponentRotation());
-			}
+				}
+			}	
 
 			if(Cast<ICollectibleItem>(HitActor))
 			{

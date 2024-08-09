@@ -25,4 +25,6 @@ class THESAILINGSIREN_API IRiddleInteractable
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interact")
 	const USceneComponent*  Interact();
+
+	virtual void StopRiddle() = 0;
 };

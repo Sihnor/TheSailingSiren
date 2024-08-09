@@ -76,6 +76,16 @@ void ATheSailingSirenGameMode::OnMonologueSamael_Implementation()
 {
 }
 
+void ATheSailingSirenGameMode::StartFirstDialogue()
+{
+	OnRiddleSolved(ECurrentPlayState::None);
+}
+
+void ATheSailingSirenGameMode::StartSecondDialogue()
+{
+	OnStartSecondDialogueMotAndSamael();
+}
+
 
 void ATheSailingSirenGameMode::OnStartRiddleOne_Implementation()
 {
@@ -93,7 +103,8 @@ void ATheSailingSirenGameMode::BeginPlay()
 		this->AllRiddles[i]->SetRiddleIndex(static_cast<ECurrentPlayState>(i + 1));
 	}
 
-	OnRiddleSolved(ECurrentPlayState::None);
+	this->OnStartIntroduction();
+	//OnRiddleSolved(ECurrentPlayState::None);
 }
 
 ATheSailingSirenGameMode::ATheSailingSirenGameMode()
@@ -124,12 +135,12 @@ void ATheSailingSirenGameMode::OnRiddleSolved_Implementation(ECurrentPlayState C
 
 	switch (CurrentRiddleIndex) {
 	case ECurrentPlayState::None:
-		this->OnStartIntroduction();
+		OnStartFirstDialogueMotAndSamael();
 		break;
 	case ECurrentPlayState::RiddleOne:
 		break;
 	case ECurrentPlayState::RiddleTwo:
-		this->OnStartSecondDialogueMotAndSamael();
+		//this->OnStartSecondDialogueMotAndSamael();
 		break;
 	case ECurrentPlayState::RiddleThree:
 		break;

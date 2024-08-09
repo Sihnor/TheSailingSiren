@@ -40,8 +40,11 @@ public:
 	void SetRiddleIndex(const ECurrentPlayState State) { if(this->RiddleState != ECurrentPlayState::None) return; this->RiddleState = State; }
 	ECurrentPlayState GetRiddleIndex() const { return this->RiddleState; }
 
+	UPROPERTY(BlueprintAssignable, BlueprintReadWrite, Category = "Riddle")
 	FOnRiddleSolved OnRiddleSolved;
 
 protected:
 	ECurrentPlayState RiddleState = ECurrentPlayState::None;
+
+	virtual void StopRiddle() override;
 };

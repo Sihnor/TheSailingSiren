@@ -50,9 +50,7 @@ UTexture2D* AItem::GetItemIcon()
 
 void AItem::Collect()
 {
-	// print name of item collected
-	//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Collected %s"), *GetItemName()));
-
+	OnCollect();
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 	SetActorTickEnabled(false);

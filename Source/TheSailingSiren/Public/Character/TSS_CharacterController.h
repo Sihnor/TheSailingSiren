@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TSS_CharacterController.generated.h"
 
+class IRiddleInteractable;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
@@ -63,6 +64,8 @@ public:
 	void ResetIsCollecting();
 	
 
+	UFUNCTION(BlueprintCallable)
+	void StopMoveForDialog();
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -113,4 +116,6 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
 	bool bIsInInventory = false;
+
+	IRiddleInteractable* CurrentInteractable = nullptr;
 };

@@ -3,8 +3,6 @@
 
 #include "Riddles/BirdcageRiddle.h"
 
-#include "GameMode/TSS_GameMode.h"
-
 
 // Sets default values
 ABirdcageRiddle::ABirdcageRiddle()
@@ -16,6 +14,11 @@ ABirdcageRiddle::ABirdcageRiddle()
 	this->BirdcageDoor->SetupAttachment(this->Root);
 }
 
+void ABirdcageRiddle::BroadCastRiddleFinished()
+{
+	this->OnRiddleSolved.Broadcast(GetRiddleIndex());
+}
+
 // Called when the game starts or when spawned
 void ABirdcageRiddle::BeginPlay()
 {
@@ -24,12 +27,26 @@ void ABirdcageRiddle::BeginPlay()
 
 const USceneComponent* ABirdcageRiddle::Interact_Implementation()
 {
-	return Super::Interact_Implementation();
+	const USceneComponent* ReturnValue = Super::Interact_Implementation();
+
+	if (ReturnValue != nullptr)
+	{
+		ShowInvertory();
+	}
+
+	return ReturnValue;
 }
 
 // Called every frame
 void ABirdcageRiddle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABirdcageRiddle::StopRiddle()
+{
+	Super::StopRiddle();
+
+	HideInventory();
 }
 

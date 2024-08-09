@@ -79,7 +79,7 @@ void ATheSailingSirenCharacter::Tick(const float DeltaSeconds)
 	// Check if the player is further away from the Jump Point
 	if (!this->bIsFurtherAway)
 	{
-		if (FVector::Distance(this->JumpPosition->GetPosition(), this->GetActorLocation()) > 500.f)
+		if (FVector::Distance(this->JumpPosition->GetPosition(), this->GetActorLocation()) > 100.f)
 		{
 			this->bIsFurtherAway = true;
 			this->JumpPosition->LockPosition(this->GetActorLocation());
@@ -94,7 +94,7 @@ void ATheSailingSirenCharacter::Tick(const float DeltaSeconds)
 	// Check if the player is further away from the Jump Point
 	if (this->bIsFurtherAway)
 	{
-		if (FVector::Distance(this->JumpPosition->GetPosition(), this->GetActorLocation()) > 800.f)
+		if (FVector::Distance(this->JumpPosition->GetPosition(), this->GetActorLocation()) > 150.f)
 		{
 			this->JumpPosition->SetPosition();
 			this->bIsFurtherAway = false;
@@ -105,6 +105,7 @@ void ATheSailingSirenCharacter::Tick(const float DeltaSeconds)
 
 void ATheSailingSirenCharacter::StartMovementCameraToTarget(const FVector& TargetLocation)
 {
+	
 	this->CameraTargetLocation = TargetLocation;
 	this->bIsCameraMoving = true;
 }
@@ -135,6 +136,11 @@ void ATheSailingSirenCharacter::GetCurrentCameraTransform(FVector& OutLocation, 
 
 //////////////////////////////////////////////////////////////////////////
 // Input
+
+void ATheSailingSirenCharacter::StartMotJump()
+{
+	this->bIsMotJumping = true;
+}
 
 void ATheSailingSirenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

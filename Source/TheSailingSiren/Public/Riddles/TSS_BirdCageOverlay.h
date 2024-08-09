@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "TSS_BirdCagePuzzle.generated.h"
+#include "TSS_BirdCageOverlay.generated.h"
 
 class UImage;
 class UButton;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCageSolved);
 
 /**
  * 
@@ -20,6 +22,9 @@ class THESAILINGSIREN_API UBirdCagePuzzle : public UUserWidget
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Puzzle")
 	TArray<UTexture*> TextureList;
+
+	UPROPERTY(BlueprintAssignable, BlueprintReadWrite, Category = "Puzzle")
+	FOnCageSolved OnCageSolved;
 
 public:
 	virtual void NativeConstruct() override;
@@ -107,4 +112,7 @@ protected:
 
 private:
 	void CheckPuzzle();
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	bool bIsSolved = false;
 };
