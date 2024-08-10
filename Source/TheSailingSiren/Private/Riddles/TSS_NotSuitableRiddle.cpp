@@ -101,6 +101,10 @@ bool ANotSuitableRiddle::CheckForAnotherRound() const
 		}
 	}
 
+	
+	this->Letter->SetActorHiddenInGame(false);
+	this->Letter->SetActorEnableCollision(true);
+	this->Letter->SetActorTickEnabled(true);
 	this->OnRiddleSolved.Broadcast(GetRiddleIndex());
 	return false;
 }

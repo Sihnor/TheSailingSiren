@@ -63,22 +63,36 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameProgres")
 	void OnOpenTrapdoor();
 	virtual void OnOpenTrapdoor_Implementation();
+
+	void OnLastLetterCollected();
 	
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameProgres")
 	void OnCollectLetter();
 	virtual void OnCollectLetter_Implementation();
 
+	UFUNCTION(BlueprintCallable)
+	void PlayReadLetterSound();
+	
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameProgres")
 	void OnReadLetter();
 	virtual void OnReadLetter_Implementation();
 
+	UFUNCTION(BlueprintCallable)
+	void StartLastDialogue();
+	
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameProgres")
 	void OnLastDialogueMotAndSamael();
 	virtual void OnLastDialogueMotAndSamael_Implementation();
 
+	UFUNCTION(BlueprintCallable)
+	void StartMotMonologue();
+	
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameProgres")
 	void OnMonologueMot();
 	virtual void OnMonologueMot_Implementation();
+
+	UFUNCTION(BlueprintCallable)
+	void StartSamaelMonologue();
 	
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameProgres")
 	void OnMonologueSamael();
@@ -91,7 +105,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartSecondDialogue();
 	
-	
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayRiddleSolvedSound();
 
 	
 	
@@ -117,6 +132,7 @@ public:
 	void OnRiddleSolved(ECurrentPlayState CurrentRiddleIndex);
 	void OnRiddleSolved_Implementation(ECurrentPlayState CurrentRiddleIndex);
 };
+
 
 
 

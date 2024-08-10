@@ -27,8 +27,14 @@ ATransitionObject::ATransitionObject()
 	this->Mesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 }
 
+void ATransitionObject::UnlockDoor()
+{
+	this->bIsLocked = false;
+}
+
 USceneComponent* ATransitionObject::GetTransitionPoint_Implementation()
 {
+	if (this->bIsLocked) return nullptr;
 	return this->TransitionPoint;
 }
 

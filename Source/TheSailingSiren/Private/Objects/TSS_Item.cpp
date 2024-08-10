@@ -36,7 +36,7 @@ AItem::AItem()
 
 void AItem::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
-	Collect();
+	//Collect();
 }
 
 FString AItem::GetItemName()
@@ -52,6 +52,7 @@ UTexture2D* AItem::GetItemIcon()
 void AItem::Collect()
 {
 	OnCollect();
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item %s collected"), *ItemName));
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 	SetActorTickEnabled(false);

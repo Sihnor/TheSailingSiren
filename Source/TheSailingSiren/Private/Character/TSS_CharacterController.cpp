@@ -11,6 +11,7 @@
 #include "Interfaces/TSS_RiddleInteractable.h"
 #include "TimerManager.h"
 #include "Engine/StaticMeshActor.h"
+#include "GameMode/TSS_GameMode.h"
 #include "Interfaces/TSS_Transition.h"
 #include "Objects/TSS_Item.h"
 
@@ -182,27 +183,33 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 			{
 				if (const USceneComponent* PuzzleCamera = this->CurrentInteractable->Execute_Interact(HitActor))
 					StartCameraToPuzzleMovement(PuzzleCamera->GetComponentLocation(), PuzzleCamera->GetComponentRotation());
-			}	
+			}
 
 			// Item Interact
-			if(auto item = Cast<ICollectibleItem>(HitActor))
+			if(Cast<ICollectibleItem>(HitActor))
 			{
 				CollectItem(HitActor);
 				this->bIsCollecting = true;
 
-				if (Cast<AItem>(HitActor)->IsItemLetter()) this->LetterCount++;
+				if (Cast<AItem>(HitActor)->IsItemLetter())
+				{
+					this->LetterCount++;
+				};
 				if (Cast<AItem>(HitActor)->IsItemTranscript()) this->TranscriptCount++;
-
-				FString DebugMessage = FString::Printf(TEXT("Transcript Count: %d"), this->TranscriptCount);
-				GEngine->AddOnScreenDebugMessage(-1, 132.f, FColor::Red, DebugMessage);
-
-				FString DebugMessage2 = FString::Printf(TEXT("Letter Count: %d"), this->LetterCount);
-				GEngine->AddOnScreenDebugMessage(-1, 132.f, FColor::Red, DebugMessage2);
 				
 				if (this->TranscriptCount == 5)
 				{
 					GetWorld()->SpawnActor<AStaticMeshActor>(this->TranslationMesh, FVector(656.000148f, 149.261385f, 96), FRotator(0, 139.251098f, 18));
-				};
+				}
+
+				if (this->LetterCount == 5)
+				{
+					// Get GameMode
+					if (ATheSailingSirenGameMode* GameMode = GetWorld()->GetAuthGameMode<ATheSailingSirenGameMode>())
+					{
+						GameMode->OnLastLetterCollected();
+					}
+				}
 				
 				FTimerHandle Handle;
 				FTimerDelegate Delegate;
@@ -214,9 +221,7 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 			if (auto temp = Cast<ITransition>(HitActor))
 			{
 				USceneComponent* location = temp->Execute_GetTransitionPoint(HitActor);
-				Transition(location);
-				//ShowTransition(location);
-				if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 132.f, FColor::Red, (TEXT("RIDDDLE OBJECT: %s"), location->GetComponentLocation().ToString()));
+				if (location) Transition(location);
 			}
 			
 		}
@@ -241,10 +246,6 @@ void ACharacterController::ShowInventory_Implementation()
 void ACharacterController::Transition_Implementation(const USceneComponent* TransitionPoint)
 {
 }
-
-//void ACharacterController::ShowTransition_Implementation(const USceneComponent* TransitionPoint)
-//{
-//}
 
 void ACharacterController::Look(const FInputActionValue& Value)
 {

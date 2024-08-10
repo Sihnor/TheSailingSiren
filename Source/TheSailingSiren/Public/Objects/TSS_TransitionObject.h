@@ -22,6 +22,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* Mesh;
 
+	UFUNCTION(BlueprintCallable)
+	void UnlockDoor();
+	
 public:
 	virtual USceneComponent* GetTransitionPoint_Implementation() override;
 
@@ -36,4 +39,7 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	bool bIsLocked = true;
 };

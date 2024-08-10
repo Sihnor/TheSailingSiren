@@ -26,6 +26,9 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* PieceMesh;
 
+	UFUNCTION(BlueprintNativeEvent)
+	void PlayWrongPieceSound();
+
 public:
 	UFUNCTION()
 	void OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);

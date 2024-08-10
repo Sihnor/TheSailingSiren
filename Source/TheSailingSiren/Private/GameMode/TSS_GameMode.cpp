@@ -56,12 +56,27 @@ void ATheSailingSirenGameMode::OnOpenTrapdoor_Implementation()
 {
 }
 
+void ATheSailingSirenGameMode::OnLastLetterCollected()
+{
+	OnCollectLetter();
+}
+
 void ATheSailingSirenGameMode::OnCollectLetter_Implementation()
 {
 }
 
+void ATheSailingSirenGameMode::PlayReadLetterSound()
+{
+	OnReadLetter();
+}
+
 void ATheSailingSirenGameMode::OnReadLetter_Implementation()
 {
+}
+
+void ATheSailingSirenGameMode::StartLastDialogue()
+{
+	OnLastDialogueMotAndSamael();
 }
 
 void ATheSailingSirenGameMode::OnLastDialogueMotAndSamael_Implementation()
@@ -138,11 +153,9 @@ void ATheSailingSirenGameMode::OnRiddleSolved_Implementation(ECurrentPlayState C
 		OnStartFirstDialogueMotAndSamael();
 		break;
 	case ECurrentPlayState::RiddleOne:
-		break;
 	case ECurrentPlayState::RiddleTwo:
-		//this->OnStartSecondDialogueMotAndSamael();
-		break;
 	case ECurrentPlayState::RiddleThree:
+		PlayRiddleSolvedSound();
 		break;
 	case ECurrentPlayState::RiddleFour:
 		this->OnOpenTrapdoor();
@@ -152,4 +165,14 @@ void ATheSailingSirenGameMode::OnRiddleSolved_Implementation(ECurrentPlayState C
 	case ECurrentPlayState::Finished:
 		break;
 	}
+}
+
+void ATheSailingSirenGameMode::StartSamaelMonologue()
+{
+	OnMonologueSamael();
+}
+
+void ATheSailingSirenGameMode::StartMotMonologue()
+{
+	OnMonologueMot();
 }

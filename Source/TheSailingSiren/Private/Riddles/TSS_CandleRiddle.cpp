@@ -24,12 +24,10 @@ void ACandleRiddle::CheckIfRiddleIsSolved()
 	{
 		if (!Candles[i]->GetIsLit())
 		{
-			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Candle %d is not lit!"), i));
 			return;
 		}
 	}
 
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Riddle Solved!"));
 	OnFinishedRiddle();
 
 	this->Letter->SetActorHiddenInGame(false);

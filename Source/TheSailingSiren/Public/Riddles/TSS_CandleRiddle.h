@@ -32,6 +32,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnFinishedRiddle();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayWrongSound();
+	
 
 	FOnRiddleUpdate OnRiddleUpdate;
 public:

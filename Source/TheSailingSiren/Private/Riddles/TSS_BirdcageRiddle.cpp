@@ -19,6 +19,13 @@ void ABirdcageRiddle::BroadCastRiddleFinished()
 	this->OnRiddleSolved.Broadcast(GetRiddleIndex());
 }
 
+void ABirdcageRiddle::ActivateLetter()
+{
+	this->Letter->SetActorHiddenInGame(false);
+	this->Letter->SetActorEnableCollision(true);
+	this->Letter->SetActorTickEnabled(true);
+}
+
 // Called when the game starts or when spawned
 void ABirdcageRiddle::BeginPlay()
 {
