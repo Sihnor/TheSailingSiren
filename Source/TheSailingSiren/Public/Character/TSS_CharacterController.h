@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TSS_CharacterController.generated.h"
 
+class AStaticMeshActor;
 class IRiddleInteractable;
 class UInputMappingContext;
 class UInputAction;
@@ -56,6 +57,9 @@ public:
 	//void ShowTransition_Implementation(const USceneComponent* TransitionPoint);
 	UFUNCTION(BlueprintNativeEvent)
 	void Transition(const USceneComponent* TransitionPoint);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Transition")
+	TSubclassOf<AStaticMeshActor> TranslationMesh;
 #pragma endregion
 
 public:
@@ -124,4 +128,7 @@ private:
 	bool bIsInInventory = false;
 
 	IRiddleInteractable* CurrentInteractable = nullptr;
+
+	int LetterCount = 0;
+	int TranscriptCount = 0;
 };

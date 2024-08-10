@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "TSS_RiddleObject.h"
-#include "BirdcageRiddle.generated.h"
+#include "TSS_BirdcageRiddle.generated.h"
 
 UCLASS()
 class THESAILINGSIREN_API ABirdcageRiddle : public ARiddleObject

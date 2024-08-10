@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Riddles/BirdcageRiddle.h"
+#include "Riddles/TSS_BirdcageRiddle.h"
 
 
 // Sets default values

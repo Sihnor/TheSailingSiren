@@ -37,6 +37,12 @@ public:
 	virtual UTexture2D* GetItemIcon() override;
 	
 	virtual void Collect() override;
+
+	bool IsItemTranscript();
+	bool IsItemLetter();
+	
+	bool IsTranscript_Implementation();
+	bool IsLetter_Implementation();
 	
 public:
 	// Sets default values for this actor's properties

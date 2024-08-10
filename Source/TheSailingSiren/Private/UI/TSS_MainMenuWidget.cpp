@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/MainMenuWidget.h"
+#include "UI/TSS_MainMenuWidget.h"
 
 #include "Components/Button.h"
 

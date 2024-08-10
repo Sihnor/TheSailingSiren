@@ -26,4 +26,10 @@ public:
 	virtual UTexture2D* GetItemIcon() = 0;
 	
 	virtual void Collect() = 0;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	bool IsLetter();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	bool IsTranscript();
 };

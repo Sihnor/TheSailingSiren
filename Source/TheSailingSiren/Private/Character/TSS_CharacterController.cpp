@@ -10,7 +10,9 @@
 #include "Interfaces/TSS_CollectibleItem.h"
 #include "Interfaces/TSS_RiddleInteractable.h"
 #include "TimerManager.h"
+#include "Engine/StaticMeshActor.h"
 #include "Interfaces/TSS_Transition.h"
+#include "Objects/TSS_Item.h"
 
 void ACharacterController::ResetIsCollecting()
 { { this->bIsCollecting = false; }
@@ -183,10 +185,24 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 			}	
 
 			// Item Interact
-			if(Cast<ICollectibleItem>(HitActor))
+			if(auto item = Cast<ICollectibleItem>(HitActor))
 			{
 				CollectItem(HitActor);
 				this->bIsCollecting = true;
+
+				if (Cast<AItem>(HitActor)->IsItemLetter()) this->LetterCount++;
+				if (Cast<AItem>(HitActor)->IsItemTranscript()) this->TranscriptCount++;
+
+				FString DebugMessage = FString::Printf(TEXT("Transcript Count: %d"), this->TranscriptCount);
+				GEngine->AddOnScreenDebugMessage(-1, 132.f, FColor::Red, DebugMessage);
+
+				FString DebugMessage2 = FString::Printf(TEXT("Letter Count: %d"), this->LetterCount);
+				GEngine->AddOnScreenDebugMessage(-1, 132.f, FColor::Red, DebugMessage2);
+				
+				if (this->TranscriptCount == 5)
+				{
+					GetWorld()->SpawnActor<AStaticMeshActor>(this->TranslationMesh, FVector(656.000148f, 149.261385f, 96), FRotator(0, 139.251098f, 18));
+				};
 				
 				FTimerHandle Handle;
 				FTimerDelegate Delegate;
