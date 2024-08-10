@@ -173,24 +173,16 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, WorldLocation + WorldDirection * this->InteractionRange, ECollisionChannel::ECC_Visibility, CollisionQueryParams))
 		{
 			AActor* HitActor = HitResult.GetActor();
-			
-			//if (IRiddleInteractable* InteractableObject = Cast<IRiddleInteractable>(HitActor))
-			//{
-			//	if (const USceneComponent* PuzzleCamera = InteractableObject->Execute_Interact(HitActor))
-			//		StartCameraToPuzzleMovement(PuzzleCamera->GetComponentLocation(), PuzzleCamera->GetComponentRotation());
-			//}
 
+			// Riddle Interact
 			this->CurrentInteractable = Cast<IRiddleInteractable>(HitActor);
 			if (this->CurrentInteractable != nullptr)
 			{
 				if (const USceneComponent* PuzzleCamera = this->CurrentInteractable->Execute_Interact(HitActor))
-				{
-					//FString LocationString = FString::Printf(TEXT("Actor Location: X=%f, Y=%f, Z=%f"), PuzzleCamera->GetComponentLocation().X, PuzzleCamera->GetComponentLocation().Y, PuzzleCamera->GetComponentLocation().Z);	
-					//if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 132.f, FColor::Red, LocationString);
 					StartCameraToPuzzleMovement(PuzzleCamera->GetComponentLocation(), PuzzleCamera->GetComponentRotation());
-				}
 			}	
 
+			// Item Interact
 			if(Cast<ICollectibleItem>(HitActor))
 			{
 				CollectItem(HitActor);
@@ -202,6 +194,7 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 				GetWorld()->GetTimerManager().SetTimer(Handle, Delegate, 1.0f, false);
 			}
 
+			// Transition Interact
 			if (auto temp = Cast<ITransition>(HitActor))
 			{
 				USceneComponent* location = temp->Execute_GetTransitionPoint(HitActor);

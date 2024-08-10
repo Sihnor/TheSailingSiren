@@ -43,6 +43,7 @@ void ACandlePiece::BeginPlay()
 
 void ACandlePiece::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("CandlePiece Clicked!"));
 	if(this->bIsLit) return;
 
 	this->bIsLit = this->ConnectedCandlePiece->NotifyCandleLit(this->CandleIndex);
@@ -62,6 +63,7 @@ void ACandlePiece::ConnectRiddle(ACandleRiddle* Riddle, const int Index)
 {
 	this->ConnectedCandlePiece = Riddle;
 	this->ConnectedCandlePiece->OnRiddleUpdate.AddUniqueDynamic(this, &ACandlePiece::NotifyCandleLit);
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Connected CandlePiece to Riddle %s"), *Riddle->GetName()));
 
 	this->CandleIndex = Index;
 }
