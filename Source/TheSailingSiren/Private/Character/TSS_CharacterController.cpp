@@ -10,6 +10,7 @@
 #include "Interfaces/TSS_CollectibleItem.h"
 #include "Interfaces/TSS_RiddleInteractable.h"
 #include "TimerManager.h"
+#include "Interfaces/TSS_Transition.h"
 
 void ACharacterController::ResetIsCollecting()
 { { this->bIsCollecting = false; }
@@ -200,6 +201,14 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 				Delegate.BindUObject(this, &ACharacterController::ResetIsCollecting);
 				GetWorld()->GetTimerManager().SetTimer(Handle, Delegate, 1.0f, false);
 			}
+
+			if (auto temp = Cast<ITransition>(HitActor))
+			{
+				USceneComponent* location = temp->Execute_GetTransitionPoint(HitActor);
+				Transition(location);
+				//ShowTransition(location);
+				if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 132.f, FColor::Red, (TEXT("RIDDDLE OBJECT: %s"), location->GetComponentLocation().ToString()));
+			}
 			
 		}
 	}
@@ -219,6 +228,14 @@ void ACharacterController::ShowInventory_Implementation()
 	}
 		
 }
+
+void ACharacterController::Transition_Implementation(const USceneComponent* TransitionPoint)
+{
+}
+
+//void ACharacterController::ShowTransition_Implementation(const USceneComponent* TransitionPoint)
+//{
+//}
 
 void ACharacterController::Look(const FInputActionValue& Value)
 {

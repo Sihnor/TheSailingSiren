@@ -50,6 +50,12 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void ShowInventory();
 	void ShowInventory_Implementation();
+
+	//UFUNCTION(BlueprintNativeEvent)
+	//void Transition(const USceneComponent* TransitionPoint);
+	//void ShowTransition_Implementation(const USceneComponent* TransitionPoint);
+	UFUNCTION(BlueprintNativeEvent)
+	void Transition(const USceneComponent* TransitionPoint);
 #pragma endregion
 
 public:
