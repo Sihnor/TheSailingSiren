@@ -43,8 +43,10 @@ public:
 	UPROPERTY(BlueprintAssignable, BlueprintReadWrite, Category = "Riddle")
 	FOnRiddleSolved OnRiddleSolved;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartRiddle();
+
 protected:
 	ECurrentPlayState RiddleState = ECurrentPlayState::None;
 
-	virtual void StopRiddle() override;
 };

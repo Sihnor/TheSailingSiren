@@ -26,5 +26,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interact")
 	const USceneComponent*  Interact();
 
-	virtual void StopRiddle() = 0;
+	UFUNCTION(BlueprintImplementableEvent, Category = "Riddle")
+	void StopRiddle();
 };

@@ -107,6 +107,7 @@ private:
 	UFUNCTION()
 	void StopCameraToPlayerMovement();
 
+	UFUNCTION(BlueprintCallable)
 	void CollectItem(AActor* Item) const;
 
 private:

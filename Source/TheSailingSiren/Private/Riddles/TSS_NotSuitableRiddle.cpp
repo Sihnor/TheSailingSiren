@@ -36,11 +36,10 @@ void ANotSuitableRiddle::StartRiddle()
 	{
 		WrongIndex = FMath::RandRange(0, 4);
 	}
-	
+
+	bool NotSuitableWasSet = false;
 	for (size_t i = 0; i < 5; i++)
 	{
-		if(this->RightPlaces & (1 << i))continue;
-		
 		ANotSuitablePiece* NewPiece = GetWorld()->SpawnActor<ANotSuitablePiece>(this->Piece);
 		NewPiece->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 
@@ -56,6 +55,7 @@ void ANotSuitableRiddle::StartRiddle()
 
 		if(WrongIndex == i)
 		{
+			NotSuitableWasSet = true;
 			NewPiece->PieceMesh->SetMaterial(0, this->NotSuitableMaterials[this->RoundIndex]);
 			NewPiece->SetRightPiece(false);
 			
@@ -66,8 +66,10 @@ void ANotSuitableRiddle::StartRiddle()
 		}
 		else
 		{
+			
 			const int Min = this->RoundIndex * 4;
-			const int MaterialIndex = FMath::RandRange(Min, Min + 4);
+			//const int MaterialIndex = FMath::RandRange(Min, Min + 4);
+			const int MaterialIndex = Min + i + (NotSuitableWasSet * -1);
 			
 			NewPiece->PieceMesh->SetMaterial(0, this->SuitableMaterials[MaterialIndex]);
 			this->AllRightPieces.Add(NewPiece);
@@ -80,6 +82,9 @@ void ANotSuitableRiddle::StartRiddle()
 void ANotSuitableRiddle::StartNextRound()
 {
 	this->CurrentWrongPiece->OnWrongPieceFound.RemoveDynamic(this, &ANotSuitableRiddle::StartNextRound);
+
+	const FVector Temp =this->CurrentWrongPiece->GetActorLocation() +GetActorRotation().RotateVector(FVector(15.0f, 0.0f, 0.0f));
+	this->CurrentWrongPiece->SetActorLocation(Temp);
 	
 	for (const auto Element : this->AllRightPieces)
 	{

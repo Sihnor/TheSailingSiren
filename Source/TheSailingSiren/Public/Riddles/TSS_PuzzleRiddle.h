@@ -39,5 +39,5 @@ private:
 	TMap<int32, FRotator> RightPieceState;
 
 	TArray<APuzzlePiece*> PuzzlePieces;
-	
+
 };

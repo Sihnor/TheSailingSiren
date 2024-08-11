@@ -71,7 +71,7 @@ void ACharacterController::Tick(float DeltaSeconds)
 		// On ESCAPE key press
 		if (this->WasInputKeyJustPressed(EKeys::Escape))
 		{
-			if (this->CurrentInteractable) this->CurrentInteractable->StopRiddle();	
+			if (this->CurrentInteractable) this->CurrentInteractable->Execute_StopRiddle(this->CurrentInteractable->_getUObject());	
 			StartCameraToPlayerMovement();
 		}
 	}

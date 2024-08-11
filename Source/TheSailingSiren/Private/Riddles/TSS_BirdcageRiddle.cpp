@@ -50,10 +50,10 @@ void ABirdcageRiddle::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ABirdcageRiddle::StopRiddle()
-{
-	Super::StopRiddle();
-
-	HideInventory();
-}
+//void ABirdcageRiddle::StopRiddle()
+//{
+//	Super::StopRiddle();
+//
+//	HideInventory();
+//}
 
