@@ -38,6 +38,9 @@ void APuzzleRiddle::OnPieceReleased()
 
 	if (bIsSolved)
 	{
+		this->Letter->SetActorHiddenInGame(false);
+		this->Letter->SetActorEnableCollision(true);
+		this->Letter->SetActorTickEnabled(true);
 		this->OnRiddleSolved.Broadcast(GetRiddleIndex());
 	}
 }
@@ -87,7 +90,7 @@ void APuzzleRiddle::BeginPlay()
 		RandomX += Location.X;
 		RandomY += Location.Y;
 
-		NewPiece->SetActorLocation(FVector(RandomX, RandomY, Location.Z + 0.5f));
+		NewPiece->SetActorLocation(FVector(RandomX, RandomY, Location.Z + 1.5f));
 
 		NewPiece->SetLockPosition(this->GetActorLocation() + this->PieceLocations[Index]);
 

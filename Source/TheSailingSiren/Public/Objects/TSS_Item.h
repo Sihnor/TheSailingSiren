@@ -21,14 +21,28 @@ public:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	FString ItemName;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
+	UTexture2D* ItemIcon;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCollect();
 	
 public:
 	UFUNCTION()
 	void OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
 
 	virtual FString GetItemName() override;
+	UFUNCTION(BlueprintCallable)
+	virtual UTexture2D* GetItemIcon() override;
 	
 	virtual void Collect() override;
+
+	bool IsItemTranscript();
+	bool IsItemLetter();
+	
+	bool IsTranscript_Implementation();
+	bool IsLetter_Implementation();
 	
 public:
 	// Sets default values for this actor's properties

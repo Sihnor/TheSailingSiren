@@ -2,10 +2,14 @@
 
 #pragma once
 
+#include <VoiceChannel.generated.h>
+
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "TSS_CharacterController.generated.h"
 
+class AStaticMeshActor;
+class IRiddleInteractable;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
@@ -23,10 +27,6 @@ class THESAILINGSIREN_API ACharacterController : public APlayerController
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
-
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
@@ -36,13 +36,30 @@ class THESAILINGSIREN_API ACharacterController : public APlayerController
 	UInputAction* StartLookAction;
 	
 	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
 	/** Interact Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
 
+	/** Interact Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* InventoryAction;
+
+public:
+	UFUNCTION(BlueprintNativeEvent)
+	void ShowInventory();
+	void ShowInventory_Implementation();
+
+	//UFUNCTION(BlueprintNativeEvent)
+	//void Transition(const USceneComponent* TransitionPoint);
+	//void ShowTransition_Implementation(const USceneComponent* TransitionPoint);
+	UFUNCTION(BlueprintNativeEvent)
+	void Transition(const USceneComponent* TransitionPoint);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Transition")
+	TSubclassOf<AStaticMeshActor> TranslationMesh;
 #pragma endregion
 
 public:
@@ -57,6 +74,8 @@ public:
 	void ResetIsCollecting();
 	
 
+	UFUNCTION(BlueprintCallable)
+	void StopMoveForDialog();
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -104,4 +123,12 @@ private:
 
 	bool bIsCollecting = false;
 	bool bIsWalking = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = "true"))
+	bool bIsInInventory = false;
+
+	IRiddleInteractable* CurrentInteractable = nullptr;
+
+	int LetterCount = 0;
+	int TranscriptCount = 0;
 };

@@ -29,10 +29,18 @@ ANotSuitablePiece::ANotSuitablePiece()
 	this->PieceMesh->OnClicked.AddDynamic(this, &ANotSuitablePiece::OnClicked);
 }
 
+void ANotSuitablePiece::PlayWrongPieceSound_Implementation()
+{
+}
+
 void ANotSuitablePiece::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
 	if (!this->bIsRightPiece)
 	{
 		this->OnWrongPieceFound.Broadcast();
+	}
+	else
+	{
+		PlayWrongPieceSound();
 	}
 }

@@ -44,11 +44,15 @@ class ATheSailingSirenCharacter : public ACharacter
 	/** Jump Position for Mot */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UJumpPosition* JumpPosition;
+
 	
 public:
 	ATheSailingSirenCharacter();
 
 	FOnCameraMovementFinished OnCameraMovementFinished;
+
+	UFUNCTION(BlueprintCallable)
+	void StartMotJump();
 	
 
 protected:
@@ -76,5 +80,6 @@ private:
 
 
 	bool bIsFurtherAway = false;
+	bool bIsMotJumping = false;
 };
 

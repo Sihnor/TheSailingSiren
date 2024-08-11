@@ -6,6 +6,11 @@
 #include "Objects/TSS_CandlePiece.h"
 
 
+void ACandleRiddle::MoveRiddleObject_Implementation()
+{
+	this->bIsInRiddle = true;
+}
+
 // Sets default values
 ACandleRiddle::ACandleRiddle()
 {
@@ -19,18 +24,24 @@ void ACandleRiddle::CheckIfRiddleIsSolved()
 	{
 		if (!Candles[i]->GetIsLit())
 		{
-			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Candle %d is not lit!"), i));
 			return;
 		}
 	}
 
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Riddle Solved!"));
+	OnFinishedRiddle();
+
+	this->Letter->SetActorHiddenInGame(false);
+	this->Letter->SetActorEnableCollision(true);
+	this->Letter->SetActorTickEnabled(true);
+	
+	
 	this->OnRiddleSolved.Broadcast(GetRiddleIndex());
 }
 
 bool ACandleRiddle::NotifyCandleLit(const int Index)
 {
-	if (this->LitCandles == Index)
+	//if (this->LitCandles == Index && this->bIsInRiddle)
+	if (this->LitCandles == Index )
 	{
 		this->LitCandles++;
 		CheckIfRiddleIsSolved();
@@ -41,6 +52,13 @@ bool ACandleRiddle::NotifyCandleLit(const int Index)
 	this->OnRiddleUpdate.Broadcast();
 
 	return false;
+}
+
+const USceneComponent* ACandleRiddle::Interact_Implementation()
+{
+	if (Super::Interact_Implementation()) MoveRiddleObject();
+	
+	return nullptr;
 }
 
 // Called when the game starts or when spawned

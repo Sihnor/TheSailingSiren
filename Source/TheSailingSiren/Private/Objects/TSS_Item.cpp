@@ -2,6 +2,8 @@
 
 
 #include "Objects/TSS_Item.h"
+#include "Engine/Texture.h"
+
 
 
 // Sets default values
@@ -34,7 +36,7 @@ AItem::AItem()
 
 void AItem::OnClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed)
 {
-	Collect();
+	//Collect();
 }
 
 FString AItem::GetItemName()
@@ -42,13 +44,37 @@ FString AItem::GetItemName()
 	return this->ItemName;
 }
 
+UTexture2D* AItem::GetItemIcon()
+{
+	return this->ItemIcon;
+}
+
 void AItem::Collect()
 {
-	// print name of item collected
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Collected %s"), *GetItemName()));
-
+	OnCollect();
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Item %s collected"), *ItemName));
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 	SetActorTickEnabled(false);
+}
+
+bool AItem::IsItemTranscript()
+{
+	return Execute_IsTranscript(this);
+}
+
+bool AItem::IsItemLetter()
+{
+	return Execute_IsLetter(this);
+}
+
+bool AItem::IsLetter_Implementation()
+{
+	return false;
+}
+
+bool AItem::IsTranscript_Implementation()
+{
+	return false;
 }
 

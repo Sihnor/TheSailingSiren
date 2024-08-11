@@ -10,14 +10,25 @@
 #include "Interfaces/TSS_CollectibleItem.h"
 #include "Interfaces/TSS_RiddleInteractable.h"
 #include "TimerManager.h"
+#include "Engine/StaticMeshActor.h"
+#include "GameMode/TSS_GameMode.h"
+#include "Interfaces/TSS_Transition.h"
+#include "Objects/TSS_Item.h"
 
 void ACharacterController::ResetIsCollecting()
 { { this->bIsCollecting = false; }
 }
 
+void ACharacterController::StopMoveForDialog()
+{
+	this->bIsWalking = false;	
+}
+
 void ACharacterController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	this->bIsInInventory = false;
 
 	//Add Input Mapping Context
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(this->GetLocalPlayer()))
@@ -60,6 +71,7 @@ void ACharacterController::Tick(float DeltaSeconds)
 		// On ESCAPE key press
 		if (this->WasInputKeyJustPressed(EKeys::Escape))
 		{
+			if (this->CurrentInteractable) this->CurrentInteractable->StopRiddle();	
 			StartCameraToPlayerMovement();
 		}
 	}
@@ -78,11 +90,13 @@ void ACharacterController::Tick(float DeltaSeconds)
 
 void ACharacterController::StartMove()
 {
+	if (this->bIsInInventory) return;
 	this->bIsWalking = true;
 }
 
 void ACharacterController::StopMove()
 {
+	if (this->bIsInInventory) return;
 	this->bIsWalking = false;
 }
 
@@ -93,10 +107,6 @@ void ACharacterController::SetupInputComponent()
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		// Jumping
-		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACharacterController::Move);
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this, &ACharacterController::StartMove);
@@ -111,6 +121,9 @@ void ACharacterController::SetupInputComponent()
 
 		// Interacting
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ACharacterController::Interact);
+
+		// Inventar
+		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &ACharacterController::ShowInventory);
 	}
 	else
 	{
@@ -123,6 +136,8 @@ void ACharacterController::SetupInputComponent()
 
 void ACharacterController::Move(const FInputActionValue& Value)
 {
+	if (this->bIsInInventory) return;
+	
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -143,6 +158,11 @@ void ACharacterController::Move(const FInputActionValue& Value)
 
 void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 {
+	if (this->bIsInInventory)
+	{
+		return;
+	};
+	
 	FVector WorldLocation;
 	FVector WorldDirection;
 
@@ -156,30 +176,81 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, WorldLocation + WorldDirection * this->InteractionRange, ECollisionChannel::ECC_Visibility, CollisionQueryParams))
 		{
 			AActor* HitActor = HitResult.GetActor();
-			
-			if (IRiddleInteractable* InteractableObject = Cast<IRiddleInteractable>(HitActor))
+
+			// Riddle Interact
+			this->CurrentInteractable = Cast<IRiddleInteractable>(HitActor);
+			if (this->CurrentInteractable != nullptr)
 			{
-				if (const USceneComponent* PuzzleCamera = InteractableObject->Execute_Interact(HitActor))
+				if (const USceneComponent* PuzzleCamera = this->CurrentInteractable->Execute_Interact(HitActor))
 					StartCameraToPuzzleMovement(PuzzleCamera->GetComponentLocation(), PuzzleCamera->GetComponentRotation());
 			}
 
+			// Item Interact
 			if(Cast<ICollectibleItem>(HitActor))
 			{
 				CollectItem(HitActor);
 				this->bIsCollecting = true;
+
+				if (Cast<AItem>(HitActor)->IsItemLetter())
+				{
+					this->LetterCount++;
+				};
+				if (Cast<AItem>(HitActor)->IsItemTranscript()) this->TranscriptCount++;
+				
+				if (this->TranscriptCount == 5)
+				{
+					GetWorld()->SpawnActor<AStaticMeshActor>(this->TranslationMesh, FVector(656.000148f, 149.261385f, 96), FRotator(0, 139.251098f, 18));
+				}
+
+				if (this->LetterCount == 5)
+				{
+					// Get GameMode
+					if (ATheSailingSirenGameMode* GameMode = GetWorld()->GetAuthGameMode<ATheSailingSirenGameMode>())
+					{
+						GameMode->OnLastLetterCollected();
+					}
+				}
 				
 				FTimerHandle Handle;
 				FTimerDelegate Delegate;
 				Delegate.BindUObject(this, &ACharacterController::ResetIsCollecting);
 				GetWorld()->GetTimerManager().SetTimer(Handle, Delegate, 1.0f, false);
 			}
+
+			// Transition Interact
+			if (auto temp = Cast<ITransition>(HitActor))
+			{
+				USceneComponent* location = temp->Execute_GetTransitionPoint(HitActor);
+				if (location) Transition(location);
+			}
 			
 		}
 	}
 }
 
+void ACharacterController::ShowInventory_Implementation()
+{
+	FInputActionValue Value;
+	this->StopLooking(Value);
+	
+	this->bIsInInventory = !this->bIsInInventory;
+
+	ACharacterState* CharacterState = GetPlayerState<ACharacterState>();
+	if(CharacterState)
+	{
+		TArray<TScriptInterface<ICollectibleItem>> Inventory = CharacterState->GetInventory();
+	}
+		
+}
+
+void ACharacterController::Transition_Implementation(const USceneComponent* TransitionPoint)
+{
+}
+
 void ACharacterController::Look(const FInputActionValue& Value)
 {
+	if (this->bIsInInventory) return;
+	
 	if (!this->bIsLooking) return;
 
 	// input is a Vector2D
@@ -202,6 +273,8 @@ void ACharacterController::CenterMouseCursor()
 
 void ACharacterController::StartLooking(const FInputActionValue& InputActionValue)
 {
+	if (this->bIsInInventory) return;
+	
 	this->bIsLooking = true;
 
 	this->bShowMouseCursor = false;
@@ -209,6 +282,8 @@ void ACharacterController::StartLooking(const FInputActionValue& InputActionValu
 
 void ACharacterController::StopLooking(const FInputActionValue& InputActionValue)
 {
+	if (this->bIsInInventory) return;
+	
 	this->bIsLooking = false;
 	
 	this->CenterMouseCursor();

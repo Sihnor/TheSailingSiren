@@ -20,6 +20,8 @@ public:
 	// Sets default values for this actor's properties
 	ARiddleObject();
 
+	virtual void BeginPlay() override;
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* Root;
@@ -30,13 +32,19 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USceneComponent* CameraPosition;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Letter")
+	AActor* Letter;
+
 public:
 	virtual const USceneComponent* Interact_Implementation() override;
 	void SetRiddleIndex(const ECurrentPlayState State) { if(this->RiddleState != ECurrentPlayState::None) return; this->RiddleState = State; }
 	ECurrentPlayState GetRiddleIndex() const { return this->RiddleState; }
 
+	UPROPERTY(BlueprintAssignable, BlueprintReadWrite, Category = "Riddle")
 	FOnRiddleSolved OnRiddleSolved;
 
-private:
+protected:
 	ECurrentPlayState RiddleState = ECurrentPlayState::None;
+
+	virtual void StopRiddle() override;
 };

@@ -23,6 +23,13 @@ class THESAILINGSIREN_API ICollectibleItem
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual FString GetItemName() = 0;
+	virtual UTexture2D* GetItemIcon() = 0;
 	
 	virtual void Collect() = 0;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	bool IsLetter();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	bool IsTranscript();
 };
