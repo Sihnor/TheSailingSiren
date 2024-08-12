@@ -34,7 +34,12 @@ void ATransitionObject::UnlockDoor()
 
 USceneComponent* ATransitionObject::GetTransitionPoint_Implementation()
 {
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GetTransitionPoint_Implementation"));
+	// print bIsLocked
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("bIsLocked: %s"), this->bIsLocked ? TEXT("true") : TEXT("false")));
 	if (this->bIsLocked) return nullptr;
+
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Returning TransitionPoint"));
 	return this->TransitionPoint;
 }
 

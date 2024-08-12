@@ -223,7 +223,12 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 			if (auto temp = Cast<ITransition>(HitActor))
 			{
 				USceneComponent* location = temp->Execute_GetTransitionPoint(HitActor);
-				if (location) Transition(location);
+				if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Transition")));
+				if (location)
+				{
+					Transition(location);
+					if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Transition")));
+				}
 			}
 			
 		}
