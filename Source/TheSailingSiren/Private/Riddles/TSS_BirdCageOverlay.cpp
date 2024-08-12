@@ -88,6 +88,7 @@ void UBirdCagePuzzle::CheckPuzzle()
 {
 	if (ImageOneIndex == 14 && ImageTwoIndex == 15 && this->ImageThreeIndex == 4 && this->ImageFourIndex == 13)
 	{
+		if ((GEngine)) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Puzzle Solved"));
 		this->bIsSolved = true;
 		this->OnCageSolved.Broadcast();
 		this->ImageOneUp->SetVisibility(ESlateVisibility::Hidden);

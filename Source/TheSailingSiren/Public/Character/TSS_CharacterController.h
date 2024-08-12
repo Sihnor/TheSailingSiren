@@ -131,5 +131,8 @@ private:
 	IRiddleInteractable* CurrentInteractable = nullptr;
 
 	int LetterCount = 0;
+	bool bWasLetterCollected = false;
 	int TranscriptCount = 0;
+	bool bWasTranscriptCollected = false;
+	
 };

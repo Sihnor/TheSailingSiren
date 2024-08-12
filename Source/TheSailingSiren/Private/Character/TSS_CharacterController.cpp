@@ -197,13 +197,15 @@ void ACharacterController::Interact(const FInputActionValue& InputActionValue)
 				};
 				if (Cast<AItem>(HitActor)->IsItemTranscript()) this->TranscriptCount++;
 				
-				if (this->TranscriptCount == 5)
+				if (this->TranscriptCount == 5 && !this->bWasTranscriptCollected)
 				{
+					this->bWasTranscriptCollected = true;
 					GetWorld()->SpawnActor<AStaticMeshActor>(this->TranslationMesh, FVector(656.000148f, 149.261385f, 96), FRotator(0, 139.251098f, 18));
 				}
 
-				if (this->LetterCount == 5)
+				if (this->LetterCount == 5 && !this->bWasLetterCollected)
 				{
+					this->bWasLetterCollected = true;
 					// Get GameMode
 					if (ATheSailingSirenGameMode* GameMode = GetWorld()->GetAuthGameMode<ATheSailingSirenGameMode>())
 					{
